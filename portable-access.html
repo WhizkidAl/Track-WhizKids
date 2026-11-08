@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portable Access & Visual Support Plan · Whiz Kids Therapy</title>
+<style>
+:root{--ink:#17324a;--blue:#0f6fb8;--blue2:#1a8bd6;--pale:#eef7fd;--line:#d8e4ec;--muted:#617789;--green:#1d7a52;--amber:#9b6a17;--bg:#f3f7fa;--white:#fff;--shadow:0 14px 36px rgba(17,50,74,.09)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}.shell{max-width:1040px;margin:auto;padding:0 18px}.hero{background:linear-gradient(135deg,#103d5d,#0f6fb8);color:white;padding:32px 0 54px}.hero h1{font-size:clamp(30px,5vw,50px);line-height:1.03;margin:8px 0 10px}.hero p{max-width:760px;color:#dfeef9;margin:0}.kicker{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;opacity:.88}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.nav a{color:white;text-decoration:none;border:1px solid rgba(255,255,255,.35);padding:8px 11px;border-radius:999px;font-size:12px;font-weight:800}.main{margin-top:-30px;padding-bottom:44px}.card{background:white;border:1px solid #e3ebf0;border-radius:20px;padding:20px;margin:14px 0;box-shadow:var(--shadow)}.section-head{display:flex;justify-content:space-between;gap:14px;align-items:start}.section-head h2{margin:3px 0 5px}.section-copy{color:var(--muted);font-size:13px;margin:0}.badge{border-radius:999px;padding:7px 10px;background:var(--pale);font-size:11px;font-weight:800}.privacy{background:#eaf7f0;border:1px solid #cae8d7;border-radius:16px;padding:13px 15px;margin-bottom:14px;font-size:13px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:block}.field span{display:block;font-size:12px;font-weight:800;margin:0 0 6px}.field input,.field textarea,.field select{width:100%;border:1px solid #ccd9e2;border-radius:12px;padding:11px 12px;font:inherit;background:white;color:var(--ink);outline:none}.field textarea{min-height:105px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(15,111,184,.1)}.plan-grid{display:grid;gap:13px}.plan-section{border:1px solid var(--line);border-radius:16px;padding:15px;background:#fbfdff}.plan-section h3{margin:0 0 4px;font-size:17px}.plan-section p{margin:0 0 11px;color:var(--muted);font-size:12px}.decision{display:grid;grid-template-columns:180px 1fr;gap:10px}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:11px 14px;font-weight:800;cursor:pointer}.primary{background:var(--blue);color:white}.secondary{background:#edf3f6;color:var(--ink)}.success{background:#e9f7ef;color:#175f40}.savebar{position:sticky;bottom:12px;z-index:10;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border:1px solid #dce6ec;box-shadow:0 12px 30px rgba(0,0,0,.12);border-radius:16px;padding:12px;display:flex;gap:10px;align-items:center;justify-content:space-between}.save-meta{font-size:11px;color:var(--muted)}.history{display:grid;gap:8px}.history-item{border:1px solid var(--line);border-radius:12px;padding:11px 12px}.history-item b{display:block}.history-item span{font-size:11px;color:var(--muted)}.conflict{display:none;background:#fff4dd;border:1px solid #efd395;border-radius:14px;padding:12px 14px;color:#78520c;margin:12px 0}.conflict.show{display:block}.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,16px);opacity:0;background:#14364f;color:#fff;padding:10px 15px;border-radius:999px;font-size:12px;font-weight:800;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.footer{text-align:center;color:var(--muted);font-size:11px;padding-top:8px}
+@media(max-width:720px){.grid,.decision{grid-template-columns:1fr}.savebar{align-items:stretch;flex-direction:column}.savebar .actions .btn{flex:1}.section-head{flex-direction:column}.card{padding:16px}}
+@media print{body{background:white}.hero{background:white;color:#111;padding:0 0 12px}.hero p{color:#555}.nav,.savebar,.auth-card,.toast,.no-print{display:none!important}.main{margin-top:0}.card,.plan-section{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="shell">
+<div class="kicker">Whiz Kids Therapy · Shared planning</div>
+<h1>Portable Access & Visual Support Plan</h1>
+<p>A collaborative working document for developing portable communication, visual and regulation supports across settings.</p>
+<div class="nav"><a href="./">Tracker</a><a href="./guide.html">How this system works</a></div>
+</div></header>
+
+<main class="shell main">
+<div class="privacy"><strong>Shared authorised document.</strong> This plan is stored in the Whiz Kids Supabase project. Only users who have been granted access to the participant can view or edit it.</div>
+
+<section class="card auth-card">
+<div class="section-head"><div><div class="kicker" style="color:var(--blue)">Secure access</div><h2>Sign in</h2><p class="section-copy">Use the authorised email address for this participant. A secure sign-in link will be sent to that address.</p></div><span class="badge" id="authBadge">Signed out</span></div>
+<div class="grid" style="margin-top:14px"><label class="field"><span>Email address</span><input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com"></label><div class="actions" style="align-items:end"><button class="btn primary" id="sendLinkBtn" onclick="sendMagicLink()">Send sign-in link</button><button class="btn secondary" id="signOutBtn" style="display:none" onclick="signOut()">Sign out</button></div></div>
+<p class="section-copy" id="authStatus" style="margin-top:10px">Sign in to load the shared plan.</p>
+</section>
+
+<section class="card">
+<div class="section-head"><div><div class="kicker" style="color:var(--blue)">Working together</div><h2>How to use this plan</h2><p class="section-copy">Add what you know, correct what is unclear, and leave questions where the team has not agreed yet. The goal is not to make every box perfect; it is to create one shared picture that can guide practical decisions.</p></div></div>
+<div class="grid" style="margin-top:14px">
+<div class="plan-section"><h3>Family</h3><p>Add what daily life looks like, what matters most, what helps, and what feels unrealistic or burdensome.</p></div>
+<div class="plan-section"><h3>School</h3><p>Add what is happening in the classroom, what supports are actually being used, where implementation is difficult, and what appears to help participation.</p></div>
+<div class="plan-section"><h3>Clinicians</h3><p>Add assessment findings, clinical reasoning and recommendations. Keep observation, interpretation and decisions clearly distinguished.</p></div>
+<div class="plan-section"><h3>Everyone</h3><p>Use the final sections to decide what will be standardised, what needs to be built, who will do it and what remains unresolved.</p></div>
+</div>
+</section>
+
+<section class="card">
+<div class="section-head"><div><div class="kicker" style="color:var(--blue)">Plan setup</div><h2>Shared document</h2><p class="section-copy">Select the authorised participant and add a short name/role so the team can see who last edited the document.</p></div><span class="badge" id="planStatusBadge">Working</span></div>
+<div class="grid" style="margin-top:14px">
+<label class="field"><span>Participant</span><select id="participant"><option value="">Sign in to load authorised participants…</option></select></label>
+<label class="field"><span>Your name / role</span><input id="editorLabel" placeholder="e.g. Mum, Katie – teacher, Alex SP"></label>
+</div>
+<div id="conflictBox" class="conflict"><strong>The plan changed since you opened it.</strong> Someone else has saved a newer version. Reload the latest plan before saving so their work is not overwritten. <button class="btn secondary" style="margin-left:8px" onclick="loadPlan(true)">Reload latest</button></div>
+</section>
+
+<section class="card" id="planCard">
+<div class="section-head"><div><div class="kicker" style="color:var(--blue)">Shared content</div><h2>Current picture and next decisions</h2><p class="section-copy">The text below is the shared working document. Existing clinical draft content may already be present; edit it together.</p></div></div>
+<div class="plan-grid" style="margin-top:14px">
+
+<div class="plan-section"><h3>Purpose of this plan</h3><p>What are we trying to improve by coordinating supports?</p><label class="field"><textarea data-key="purpose"></textarea></label></div>
+
+<div class="plan-section"><h3>Strengths, interests and successful participation</h3><p>What engages the participant? When do things go well? What conditions make participation easier?</p><label class="field"><textarea data-key="strengths_interests"></textarea></label></div>
+
+<div class="plan-section"><h3>Communication access</h3><p>What helps the participant understand, express needs, ask for help, make choices and communicate when regulation is harder?</p><label class="field"><textarea data-key="communication_access"></textarea></label></div>
+
+<div class="plan-section"><h3>Regulation and sensory supports</h3><p>What helps regulation? What can increase arousal? What should adults notice or offer early?</p><label class="field"><textarea data-key="regulation_supports"></textarea></label></div>
+
+<div class="plan-section"><h3>Current supports already in place</h3><p>List what exists now across home, school and therapy. Include resources that are available but not yet being used consistently.</p><label class="field"><textarea data-key="current_supports"></textarea></label></div>
+
+<div class="plan-section"><h3>What appears to be working</h3><p>Include successful tools, environments, interactions or routines. Do not only document problems.</p><label class="field"><textarea data-key="what_working"></textarea></label></div>
+
+<div class="plan-section"><h3>Current barriers</h3><p>Where is participation difficult? Where are supports unclear, inconsistent, impractical or unavailable?</p><label class="field"><textarea data-key="barriers"></textarea></label></div>
+
+<div class="plan-section"><h3>Family priorities</h3><p>What would the family most like the team to understand, change or build?</p><label class="field"><textarea data-key="parent_priorities"></textarea></label></div>
+
+<div class="plan-section"><h3>School priorities</h3><p>What does the school need to make support workable in the classroom and across the day?</p><label class="field"><textarea data-key="school_priorities"></textarea></label></div>
+
+<div class="plan-section"><h3>Consistency: visuals</h3><p>Which visual supports should be the agreed core set? When and how should each be used?</p><label class="field"><textarea data-key="consistency_visuals"></textarea></label></div>
+
+<div class="plan-section"><h3>Consistency: language</h3><p>What common wording, key phrases or signs should adults use with the agreed visuals?</p><label class="field"><textarea data-key="consistency_language"></textarea></label></div>
+
+<div class="plan-section"><h3>Consistency: regulation and self-advocacy</h3><p>How should break, quiet, movement, choice, help and co-regulation supports be offered?</p><label class="field"><textarea data-key="consistency_regulation"></textarea></label></div>
+
+<div class="plan-section"><h3>One-page About Me / support passport</h3><p>Would a concise portable summary help new adults understand communication, regulation, strengths and support needs?</p><div class="decision"><label class="field"><span>Decision</span><select data-key="about_me_decision"><option value="">Not discussed</option><option value="yes">Yes – build it</option><option value="consider">Consider / discuss</option><option value="no">No / not needed</option></select></label><label class="field"><span>Notes</span><textarea data-key="about_me_notes"></textarea></label></div></div>
+
+<div class="plan-section"><h3>Portable physical support folder</h3><p>Would a small folder of the agreed core supports help keep implementation consistent across adults and settings?</p><div class="decision"><label class="field"><span>Decision</span><select data-key="portable_folder_decision"><option value="">Not discussed</option><option value="yes">Yes – build it</option><option value="consider">Consider / discuss</option><option value="no">No / not needed</option></select></label><label class="field"><span>Notes</span><textarea data-key="portable_folder_notes"></textarea></label></div></div>
+
+<div class="plan-section"><h3>Parent-owned shared workspace / calendar</h3><p>Would a shared parent-controlled space improve access to current resources, meeting decisions and provider information?</p><div class="decision"><label class="field"><span>Decision</span><select data-key="workspace_decision"><option value="">Not discussed</option><option value="yes">Yes – build it</option><option value="consider">Consider / discuss</option><option value="no">No / not needed</option></select></label><label class="field"><span>Notes</span><textarea data-key="workspace_notes"></textarea></label></div></div>
+
+<div class="plan-section"><h3>Assessment and coordination</h3><p>What assessment is underway or still needed? What information needs to be shared to avoid duplication and conflicting recommendations?</p><label class="field"><textarea data-key="assessment_coordination"></textarea></label></div>
+
+<div class="plan-section"><h3>2027 transition / handover</h3><p>What needs to be portable into the next setting or team? What should be established before transition?</p><label class="field"><textarea data-key="transition_2027"></textarea></label></div>
+
+<div class="plan-section"><h3>Agreed actions</h3><p>Write concrete actions with a responsible person and timeframe where possible.</p><label class="field"><textarea data-key="agreed_actions" style="min-height:145px"></textarea></label></div>
+
+<div class="plan-section"><h3>Unresolved questions</h3><p>What still needs discussion, observation or assessment before a decision can be made?</p><label class="field"><textarea data-key="unresolved_questions"></textarea></label></div>
+
+</div>
+</section>
+
+<section class="card">
+<div class="section-head"><div><div class="kicker" style="color:var(--blue)">Document status</div><h2>Where is the team up to?</h2><p class="section-copy">This does not lock the plan. It simply tells the team whether it is still being built, ready for a coordinated review, or reflects the current agreed approach.</p></div></div>
+<div class="grid" style="margin-top:14px"><label class="field"><span>Status</span><select id="status"><option value="working">Working draft</option><option value="ready_for_review">Ready for team review</option><option value="agreed">Current agreed plan</option></select></label><div><div class="save-meta" id="lastEdited">No saved version loaded.</div></div></div>
+</section>
+
+<section class="card">
+<div class="section-head"><div><div class="kicker" style="color:var(--blue)">History</div><h2>Recent saves</h2><p class="section-copy">Each save creates a snapshot so the team has an audit trail of how the shared plan developed.</p></div></div>
+<div id="history" class="history" style="margin-top:14px"><p class="section-copy">Sign in and select a participant to load history.</p></div>
+</section>
+
+<div class="savebar no-print">
+<div><strong>Shared action plan</strong><div class="save-meta" id="saveMeta">Changes are not saved until you press Save shared plan.</div></div>
+<div class="actions"><button class="btn secondary" onclick="window.print()">Print / save PDF</button><button class="btn primary" onclick="savePlan()">Save shared plan</button></div>
+</div>
+
+<div class="footer">Whiz Kids Therapy · Shared action plan · Supabase authentication and row-level access control</div>
+</main>
+<div id="toast" class="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://fplfahemudvbeqqcmvbe.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_d96rRFBUU96nRKwYMDKRJA_Mo-BFkQd";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let currentUser=null;
+let loadedUpdatedAt=null;
+let participantMap=new Map();
+
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(window.__t);window.__t=setTimeout(()=>el.classList.remove("show"),2200)}
+function setStatus(msg){document.getElementById("authStatus").textContent=msg}
+function escapeHTML(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
+function statusLabel(v){return {working:"Working",ready_for_review:"Ready for review",agreed:"Current agreed plan"}[v]||"Working"}
+
+async function sendMagicLink(){
+ const email=document.getElementById("authEmail").value.trim();
+ if(!email)return alert("Enter your authorised email address.");
+ const btn=document.getElementById("sendLinkBtn");btn.disabled=true;setStatus("Sending sign-in link…");
+ const redirectTo=window.location.origin+window.location.pathname;
+ const {error}=await db.auth.signInWithOtp({email,options:{emailRedirectTo:redirectTo}});
+ btn.disabled=false;
+ if(error){setStatus(error.message);return alert(error.message)}
+ setStatus("Sign-in link sent. Open the newest email.");toast("Sign-in link sent");
+}
+async function signOut(){await db.auth.signOut();currentUser=null;renderAuth(null);document.getElementById("participant").innerHTML='<option value="">Sign in to load authorised participants…</option>';clearForm()}
+function renderAuth(session){
+ currentUser=session?.user||null;
+ const badge=document.getElementById("authBadge"),out=document.getElementById("signOutBtn"),send=document.getElementById("sendLinkBtn"),email=document.getElementById("authEmail");
+ if(currentUser){badge.textContent="Signed in";out.style.display="";send.style.display="none";email.value=currentUser.email||"";email.disabled=true;setStatus("Signed in as "+(currentUser.email||"authorised user")+".")}
+ else{badge.textContent="Signed out";out.style.display="none";send.style.display="";email.disabled=false;setStatus("Sign in to load the shared plan.")}
+}
+function collectAnswers(){
+ const out={};
+ document.querySelectorAll("[data-key]").forEach(el=>out[el.dataset.key]=el.value||"");
+ return out;
+}
+function applyAnswers(a){
+ document.querySelectorAll("[data-key]").forEach(el=>el.value=(a&&a[el.dataset.key]!=null)?a[el.dataset.key]:"");
+}
+function clearForm(){
+ applyAnswers({});
+ document.getElementById("status").value="working";
+ document.getElementById("lastEdited").textContent="No saved version loaded.";
+ document.getElementById("history").innerHTML='<p class="section-copy">Sign in and select a participant to load history.</p>';
+ loadedUpdatedAt=null;document.getElementById("conflictBox").classList.remove("show");
+}
+
+async function loadParticipants(){
+ const select=document.getElementById("participant");
+ const {data,error}=await db.from("participants").select("id,display_name").eq("active",true).order("display_name");
+ if(error){return alert("Could not load participants: "+error.message)}
+ participantMap=new Map((data||[]).map(x=>[x.id,x.display_name]));
+ select.innerHTML='<option value="">Choose participant…</option>'+(data||[]).map(x=>'<option value="'+x.id+'">'+escapeHTML(x.display_name)+'</option>').join("");
+ if((data||[]).length===1){select.value=data[0].id;await loadPlan(true)}
+}
+async function loadPlan(force=false){
+ if(!currentUser)return;
+ const participantId=document.getElementById("participant").value;
+ if(!participantId){clearForm();return}
+ const {data,error}=await db.from("shared_action_plans").select("participant_id,answers,status,last_editor_label,updated_at").eq("participant_id",participantId).maybeSingle();
+ if(error)return alert("Could not load action plan: "+error.message);
+ if(data){
+   applyAnswers(data.answers||{});document.getElementById("status").value=data.status||"working";
+   loadedUpdatedAt=data.updated_at||null;
+   document.getElementById("lastEdited").textContent="Last saved "+new Date(data.updated_at).toLocaleString("en-AU")+(data.last_editor_label?" by "+data.last_editor_label:"")+".";
+   document.getElementById("planStatusBadge").textContent=statusLabel(data.status);
+ }else{clearForm()}
+ document.getElementById("conflictBox").classList.remove("show");
+ await loadHistory();
+}
+async function loadHistory(){
+ const pid=document.getElementById("participant").value;if(!pid)return;
+ const {data,error}=await db.from("shared_action_plan_history").select("id,editor_label,status,created_at").eq("participant_id",pid).order("created_at",{ascending:false}).limit(12);
+ const el=document.getElementById("history");
+ if(error){el.innerHTML='<p class="section-copy">History could not be loaded.</p>';return}
+ if(!data?.length){el.innerHTML='<p class="section-copy">No previous saves yet.</p>';return}
+ el.innerHTML=data.map(x=>'<div class="history-item"><b>'+escapeHTML(x.editor_label||"Authorised team member")+'</b><span>'+new Date(x.created_at).toLocaleString("en-AU")+' · '+escapeHTML(statusLabel(x.status))+'</span></div>').join("");
+}
+async function savePlan(){
+ if(!currentUser)return alert("Please sign in first.");
+ const pid=document.getElementById("participant").value;if(!pid)return alert("Select the participant.");
+ const label=document.getElementById("editorLabel").value.trim();if(!label)return alert("Add your name or role so the team can see who edited the plan.");
+
+ const latest=await db.from("shared_action_plans").select("updated_at").eq("participant_id",pid).maybeSingle();
+ if(latest.error)return alert("Could not check the latest version: "+latest.error.message);
+ if(latest.data?.updated_at && loadedUpdatedAt && latest.data.updated_at!==loadedUpdatedAt){
+   document.getElementById("conflictBox").classList.add("show");
+   return;
+ }
+
+ const answers=collectAnswers(),status=document.getElementById("status").value;
+ const now=new Date().toISOString();
+ const payload={participant_id:pid,answers,status,last_editor_user_id:currentUser.id,last_editor_label:label,updated_at:now};
+ const {data,error}=await db.from("shared_action_plans").upsert(payload,{onConflict:"participant_id"}).select("updated_at").single();
+ if(error)return alert("Could not save the shared action plan: "+error.message);
+
+ const hist=await db.from("shared_action_plan_history").insert({participant_id:pid,editor_user_id:currentUser.id,editor_label:label,status,answers});
+ if(hist.error)alert("The plan saved, but the history snapshot could not be added: "+hist.error.message);
+
+ loadedUpdatedAt=data.updated_at;
+ document.getElementById("lastEdited").textContent="Last saved "+new Date(data.updated_at).toLocaleString("en-AU")+" by "+label+".";
+ document.getElementById("planStatusBadge").textContent=statusLabel(status);
+ document.getElementById("conflictBox").classList.remove("show");
+ await loadHistory();toast("Shared action plan saved");
+}
+
+async function init(){
+ document.getElementById("participant").addEventListener("change",()=>loadPlan(true));
+ const {data:{session}}=await db.auth.getSession();renderAuth(session);if(session)await loadParticipants();
+ db.auth.onAuthStateChange(async(_,session)=>{renderAuth(session);if(session)await loadParticipants();else clearForm()});
+}
+init();
+</script>
+</body>
+</html>
