@@ -103,11 +103,11 @@
 </section>
 
 <div class="savebar no-print">
-<div><strong>Shared action plan</strong><div class="save-meta" id="saveMeta">Changes are not saved until you press Save shared plan.</div></div>
+<div><strong>Portable access plan</strong><div class="save-meta" id="saveMeta">Changes are not saved until you press Save shared plan.</div></div>
 <div class="actions"><button class="btn secondary" onclick="window.print()">Print / save PDF</button><button class="btn primary" onclick="savePlan()">Save shared plan</button></div>
 </div>
 
-<div class="footer">Whiz Kids Therapy · Shared action plan · Supabase authentication and row-level access control</div>
+<div class="footer">Whiz Kids Therapy · Portable access plan · Supabase authentication and row-level access control</div>
 </main>
 <div id="toast" class="toast"></div>
 
@@ -170,7 +170,7 @@ async function loadPlan(force=false){
  if(!currentUser)return;
  const participantId=document.getElementById("participant").value;
  if(!participantId){clearForm();return}
- const {data,error}=await db.from("shared_action_plans").select("participant_id,answers,status,last_editor_label,updated_at").eq("participant_id",participantId).maybeSingle();
+ const {data,error}=await db.from("portable_access_plans").select("participant_id,answers,status,last_editor_label,updated_at").eq("participant_id",participantId).maybeSingle();
  if(error)return alert("Could not load action plan: "+error.message);
  if(data){
    applyAnswers(data.answers||{});document.getElementById("status").value=data.status||"working";
@@ -183,7 +183,7 @@ async function loadPlan(force=false){
 }
 async function loadHistory(){
  const pid=document.getElementById("participant").value;if(!pid)return;
- const {data,error}=await db.from("shared_action_plan_history").select("id,editor_label,status,created_at").eq("participant_id",pid).order("created_at",{ascending:false}).limit(12);
+ const {data,error}=await db.from("portable_access_plan_history").select("id,editor_label,status,created_at").eq("participant_id",pid).order("created_at",{ascending:false}).limit(12);
  const el=document.getElementById("history");
  if(error){el.innerHTML='<p class="section-copy">History could not be loaded.</p>';return}
  if(!data?.length){el.innerHTML='<p class="section-copy">No previous saves yet.</p>';return}
@@ -194,7 +194,7 @@ async function savePlan(){
  const pid=document.getElementById("participant").value;if(!pid)return alert("Select the participant.");
  const label=document.getElementById("editorLabel").value.trim();if(!label)return alert("Add your name or role so the team can see who edited the plan.");
 
- const latest=await db.from("shared_action_plans").select("updated_at").eq("participant_id",pid).maybeSingle();
+ const latest=await db.from("portable_access_plans").select("updated_at").eq("participant_id",pid).maybeSingle();
  if(latest.error)return alert("Could not check the latest version: "+latest.error.message);
  if(latest.data?.updated_at && loadedUpdatedAt && latest.data.updated_at!==loadedUpdatedAt){
    document.getElementById("conflictBox").classList.add("show");
@@ -204,17 +204,17 @@ async function savePlan(){
  const answers=collectAnswers(),status=document.getElementById("status").value;
  const now=new Date().toISOString();
  const payload={participant_id:pid,answers,status,last_editor_user_id:currentUser.id,last_editor_label:label,updated_at:now};
- const {data,error}=await db.from("shared_action_plans").upsert(payload,{onConflict:"participant_id"}).select("updated_at").single();
- if(error)return alert("Could not save the shared action plan: "+error.message);
+ const {data,error}=await db.from("portable_access_plans").upsert(payload,{onConflict:"participant_id"}).select("updated_at").single();
+ if(error)return alert("Could not save the portable access plan: "+error.message);
 
- const hist=await db.from("shared_action_plan_history").insert({participant_id:pid,editor_user_id:currentUser.id,editor_label:label,status,answers});
+ const hist=await db.from("portable_access_plan_history").insert({participant_id:pid,editor_user_id:currentUser.id,editor_label:label,status,answers});
  if(hist.error)alert("The plan saved, but the history snapshot could not be added: "+hist.error.message);
 
  loadedUpdatedAt=data.updated_at;
  document.getElementById("lastEdited").textContent="Last saved "+new Date(data.updated_at).toLocaleString("en-AU")+" by "+label+".";
  document.getElementById("planStatusBadge").textContent=statusLabel(status);
  document.getElementById("conflictBox").classList.remove("show");
- await loadHistory();toast("Shared action plan saved");
+ await loadHistory();toast("Portable access plan saved");
 }
 
 async function init(){
