@@ -38,9 +38,9 @@ input[type=email]{width:100%;border:1px solid #cddae4;background:#fff;color:var(
   <p class="section-copy" id="authStatus" style="margin-top:12px">Sign in before entering or reviewing tracker data.</p>
 </section>
 <section class="card"><div class="section-head"><div><div class="section-kicker">How to use this</div><h2>Useful data without making the day about data</h2><p class="section-copy">This tool is deliberately quick. Each part of the day can be saved separately as it happens. The minimum useful entry is a few selections; open the optional detail only when it may help explain what was happening.</p></div></div><div class="how-grid"><div class="how-step"><b>1 · Morning context</b><p>Home adds the quick sleep, breakfast, morning and medication snapshot. A comment is optional unless there is something worth knowing.</p></div><div class="how-step"><b>2 · Three school checks</b><p>At mid-morning, before lunch and end of day, choose the closest participation and regulation options and save that checkpoint. A comment is optional.</p></div><div class="how-step"><b>3 · Add detail when useful</b><p>If more detail would help, press “Add context / strategies” to record what was going on, what was tried and whether it helped. Leave it closed on ordinary days.</p></div></div><p class="micro-note"><strong>Important:</strong> the pattern view shows associations in the data, not proof of cause. Use the reflection section to record a working hypothesis, question or alternative explanation for the team to consider.</p></section><section class="card"><div class="section-head"><div><div class="section-kicker">Setup</div><h2>Today’s record</h2><p class="section-copy">Use a first name, initials or participant code. One saved record is kept for each date.</p></div><div class="step-badge">Step 1</div></div><div class="grid"><label class="field"><span>Participant</span><select id="participant"><option value="">Sign in to load authorised participants...</option></select></label><label class="field"><span>Date</span><input id="date" type="date"></label></div></section>
-<section class="card"><div class="section-head"><div><div class="section-kicker">Home handover</div><h2>Morning snapshot</h2><p class="section-copy">Four quick checks from home. Add a comment only when something is useful to know.</p></div><div class="step-badge">Parent</div></div><div class="grid four-grid"><div class="mini-field"><div class="mini-label"><i class="mini-dot"></i>Sleep</div><select id="sleep"><option value="">Select...</option><option>Slept through</option><option>Woke during the night</option><option>Poor/restless sleep</option><option>Early waking</option></select></div><div class="mini-field"><div class="mini-label"><i class="mini-dot"></i>Breakfast</div><select id="breakfast"><option value="">Select...</option><option>Ate usual amount</option><option>Ate some</option><option>Ate very little</option><option>Did not eat</option></select></div><div class="mini-field"><div class="mini-label"><i class="mini-dot"></i>Morning at home</div><select id="homeMorning"><option value="">Select...</option><option>Settled/usual</option><option>More active/restless than usual</option><option>Tired</option><option>Upset/dysregulated</option><option>Other</option></select></div><div class="mini-field"><div class="mini-label"><i class="mini-dot"></i>Medication</div><select id="medication"><option value="">Select...</option><option>Usual medication/time</option><option>Different timing</option><option>Missed</option><option>Changed</option><option>Not applicable</option></select></div></div><label class="field comment-wide"><span>Brief morning comment <em>optional</em></span><textarea id="parentComment" placeholder="Anything relevant about sleep, appetite, the morning or how the participant arrived at school"></textarea></label><div class="section-save no-print"><span class="save-hint">Mum can save this now; school can add their sections later.</span><button class="primary" type="button" onclick="saveMorning()">Save morning</button></div></section>
+<section class="card"><div class="section-head"><div><div class="section-kicker">Home handover</div><h2>Morning snapshot</h2><p class="section-copy">Four quick checks from home. Add a comment only when something is useful to know.</p></div><div class="step-badge">Parent</div></div><div class="grid four-grid"><div class="mini-field"><div class="mini-label"><i class="mini-dot"></i>Sleep</div><select id="sleep"><option value="">Select...</option><option>Slept through</option><option>Woke during the night</option><option>Poor/restless sleep</option><option>Early waking</option></select></div><div class="mini-field"><div class="mini-label"><i class="mini-dot"></i>Breakfast</div><select id="breakfast"><option value="">Select...</option><option>Ate usual amount</option><option>Ate some</option><option>Ate very little</option><option>Did not eat</option></select></div><div class="mini-field"><div class="mini-label"><i class="mini-dot"></i>Morning at home</div><select id="homeMorning"><option value="">Select...</option><option>Settled/usual</option><option>More active/restless than usual</option><option>Tired</option><option>Upset/dysregulated</option><option>Other</option></select></div><div class="mini-field"><div class="mini-label"><i class="mini-dot"></i>Medication</div><select id="medication"><option value="">Select...</option><option>Usual medication/time</option><option>Different timing</option><option>Missed</option><option>Changed</option><option>Not applicable</option></select></div></div><div class="grid" style="margin-top:12px"><label class="field"><span>Completed by <em>optional</em></span><input id="morningCompletedBy" type="text" placeholder="e.g. Mum"></label></div><label class="field comment-wide"><span>Brief morning comment <em>optional</em></span><textarea id="parentComment" placeholder="Anything relevant about sleep, appetite, the morning or how the participant arrived at school"></textarea></label><div class="section-save no-print"><span class="save-hint">Mum can save this now; school can add their sections later.</span><button class="primary" type="button" onclick="saveMorning()">Save morning</button></div></section>
 <section class="card"><div class="section-head"><div><div class="section-kicker">School</div><h2>Three checkpoints</h2><p class="section-copy">Complete mid-morning, just before lunch and at the end of the day. A short comment matters even when things are going well: it tells us what “going well” actually looked like.</p></div><div class="step-badge">3 × daily</div></div><div id="checkpoints" class="checkpoint-stack"></div></section>
-<section id="incidentCard" class="card"><div class="section-head"><div><div class="section-kicker">Only if needed</div><h2>Significant incident</h2><p class="section-copy">Keep normal school incident processes. This simply marks where an incident sits within the whole-day pattern.</p></div></div><div class="choice-group"><label class="choice"><input type="radio" name="incident" value="No" checked><span>No significant incident</span></label><label class="choice"><input type="radio" name="incident" value="Yes"><span>Yes - incident occurred</span></label></div><div id="incidentDetails"><div class="grid"><label class="field"><span>Approximate time</span><input id="incidentTime" type="time"></label><label class="field"><span>Usual school incident process</span><select id="formalProcess"><option value="">Select...</option><option>Completed</option><option>Not required</option><option>To be completed</option></select></label></div><label class="field comment-wide"><span>What happened immediately before?</span><textarea id="antecedent" placeholder="Activity, demand, transition, environmental change, interaction - or no clear antecedent identified"></textarea></label><label class="field comment-wide"><span>What happened?</span><textarea id="incidentDescription" placeholder="Brief description only"></textarea></label><label class="field comment-wide"><span>What happened afterwards / what helped?</span><textarea id="incidentAfter" placeholder="What staff did, what the participant did, and whether they returned to participation"></textarea></label></div><div class="section-save no-print"><span class="save-hint">Save this separately if an incident needs to be marked.</span><button class="primary" type="button" onclick="saveIncident()">Save incident section</button></div></section>
+<section id="incidentCard" class="card"><div class="section-head"><div><div class="section-kicker">Only if needed</div><h2>Significant incident</h2><p class="section-copy">Keep normal school incident processes. This simply marks where an incident sits within the whole-day pattern.</p></div></div><div class="choice-group"><label class="choice"><input type="radio" name="incident" value="No" checked><span>No significant incident</span></label><label class="choice"><input type="radio" name="incident" value="Yes"><span>Yes - incident occurred</span></label></div><div class="grid" style="margin-top:12px"><label class="field"><span>Completed by <em>optional</em></span><input id="incidentCompletedBy" type="text" placeholder="e.g. EA, teacher"></label></div><div id="incidentDetails"><div class="grid"><label class="field"><span>Approximate time</span><input id="incidentTime" type="time"></label><label class="field"><span>Usual school incident process</span><select id="formalProcess"><option value="">Select...</option><option>Completed</option><option>Not required</option><option>To be completed</option></select></label></div><label class="field comment-wide"><span>What happened immediately before?</span><textarea id="antecedent" placeholder="Activity, demand, transition, environmental change, interaction - or no clear antecedent identified"></textarea></label><label class="field comment-wide"><span>What happened?</span><textarea id="incidentDescription" placeholder="Brief description only"></textarea></label><label class="field comment-wide"><span>What happened afterwards / what helped?</span><textarea id="incidentAfter" placeholder="What staff did, what the participant did, and whether they returned to participation"></textarea></label></div><div class="section-save no-print"><span class="save-hint">Save this separately if an incident needs to be marked.</span><button class="primary" type="button" onclick="saveIncident()">Save incident section</button></div></section>
 <div class="savebar no-print"><div class="savebar-copy"><b>Need to save everything currently on screen?</b><span>Each section can be saved as the day unfolds. This button is only a convenience.</span></div><div class="actions"><button class="primary" onclick="saveRecord()">Save all current sections</button><button class="secondary" onclick="resetForm()">Clear form</button></div></div>
 <section class="card progress-card"><div><div class="section-kicker">Three-week view</div><h2>Tracking progress</h2><p class="section-copy">Approximately 15 school days gives enough repeated time points to look for patterns without making data collection burdensome.</p><div class="progress-track"><div id="progressFill" class="progress-fill"></div></div><div class="progress-meta"><span id="progressText">0% complete</span><span>15 school days</span></div></div><div class="progress-number"><strong><span id="dayCount">0</span>/15</strong><span>days saved</span></div></section>
 <section class="card"><div class="section-head"><div><div class="section-kicker">Daily trail</div><h2>Recorded days</h2><p class="section-copy">This is the audit trail, not the main analysis. Each day stays compact; open one only when you want the detail or need to edit it.</p></div></div><div id="dailyTrail" class="daily-list"></div></section>
@@ -169,6 +169,7 @@ function buildCheckpoints(){
          '<label class="field comment-field"><span>Anything else? <em>optional</em></span><textarea id="'+cp.key+'_supportNote" placeholder="Add nuance only if useful — e.g. noise increased after lunch, movement break helped briefly, no obvious trigger."></textarea></label>'+
        '</div>'+
      '</div>'+
+     '<div class="grid" style="margin-top:12px"><label class="field"><span>Completed by <em>optional</em></span><input id="'+cp.key+'_completedBy" type="text" placeholder="e.g. EA, teacher"></label></div>'+
      '<label class="field comment-field"><span>Brief comment <em>optional but useful</em></span>'+
        '<textarea id="'+cp.key+'_comment" placeholder="What was the participant doing? What helped? Was anything making participation harder?"></textarea>'+
      '</label>'+
@@ -301,7 +302,7 @@ async function loadRecords(){
  reflections=reflectionRes.data||[];
 
  const {data:days,error:dayError}=await db.from("tracker_days")
-   .select("id,tracking_date,sleep,breakfast,home_morning,medication_status,parent_comment,updated_at")
+   .select("id,tracking_date,sleep,breakfast,home_morning,medication_status,parent_comment,morning_completed_by,updated_at")
    .eq("participant_id",participantId)
    .order("tracking_date",{ascending:true});
  if(dayError){alert("Could not load tracker days: "+dayError.message);return;}
@@ -310,13 +311,13 @@ async function loadRecords(){
  let cps=[],incs=[];
  if(dayIds.length){
    const cpRes=await db.from("school_checkpoints")
-     .select("tracker_day_id,checkpoint,participation,regulation,comment,context_factors,support_strategies,support_effect,support_note")
+     .select("tracker_day_id,checkpoint,participation,regulation,comment,context_factors,support_strategies,support_effect,support_note,completed_by")
      .in("tracker_day_id",dayIds);
    if(cpRes.error){alert("Could not load school checkpoints: "+cpRes.error.message);return;}
    cps=cpRes.data||[];
 
    const inRes=await db.from("incidents")
-     .select("tracker_day_id,occurred,approximate_time,antecedent,event_description,after_or_what_helped,school_incident_process_status,school_incident_process_completed")
+     .select("tracker_day_id,occurred,approximate_time,antecedent,event_description,after_or_what_helped,school_incident_process_status,school_incident_process_completed,completed_by")
      .in("tracker_day_id",dayIds);
    if(inRes.error){alert("Could not load incidents: "+inRes.error.message);return;}
    incs=inRes.data||[];
@@ -341,7 +342,8 @@ async function loadRecords(){
        contextFactors:c.context_factors||[],
        supportStrategies:c.support_strategies||[],
        supportEffect:c.support_effect||"",
-       supportNote:c.support_note||""
+       supportNote:c.support_note||"",
+       completedBy:c.completed_by||""
      };
    };
    return {
@@ -353,7 +355,8 @@ async function loadRecords(){
        breakfast:d.breakfast||"",
        morning:d.home_morning||"",
        medication:d.medication_status||"",
-       comment:d.parent_comment||""
+       comment:d.parent_comment||"",
+       completedBy:d.morning_completed_by||""
      },
      checkpoints:{
        midMorning:toUi("mid_morning"),
@@ -368,7 +371,8 @@ async function loadRecords(){
        after:inc?.after_or_what_helped||"",
        formalProcess:inc?.school_incident_process_status||
          (inc?.school_incident_process_completed===true?"Completed":
-          inc?.school_incident_process_completed===false?"To be completed":"")
+          inc?.school_incident_process_completed===false?"To be completed":""),
+       completedBy:inc?.completed_by||""
      },
      updatedAt:d.updated_at
    };
@@ -401,7 +405,8 @@ async function saveMorning(reload=true){
    breakfast:document.getElementById("breakfast").value||null,
    home_morning:document.getElementById("homeMorning").value||null,
    medication_status:document.getElementById("medication").value||null,
-   parent_comment:document.getElementById("parentComment").value.trim()||null
+   parent_comment:document.getElementById("parentComment").value.trim()||null,
+   morning_completed_by:document.getElementById("morningCompletedBy").value.trim()||null
  },{onConflict:"participant_id,tracking_date"});
  if(error){alert("Morning handover could not be saved: "+error.message);return false;}
  if(reload){await loadRecords();showToast("Morning saved");}
@@ -423,7 +428,8 @@ async function saveCheckpoint(cpKey,reload=true){
    context_factors:checkedValues(cp.key+"_context"),
    support_strategies:checkedValues(cp.key+"_strategy"),
    support_effect:getRadio(cp.key+"_effect")||null,
-   support_note:document.getElementById(cp.key+"_supportNote").value.trim()||null
+   support_note:document.getElementById(cp.key+"_supportNote").value.trim()||null,
+   completed_by:document.getElementById(cp.key+"_completedBy").value.trim()||null
  };
  const {error}=await db.from("school_checkpoints").upsert(row,{onConflict:"tracker_day_id,checkpoint"});
  if(error){alert(cp.label+" could not be saved: "+error.message);return false;}
@@ -443,7 +449,8 @@ async function saveIncident(reload=true){
    event_description:incidentOccurred?(document.getElementById("incidentDescription").value.trim()||null):null,
    after_or_what_helped:incidentOccurred?(document.getElementById("incidentAfter").value.trim()||null):null,
    school_incident_process_status:incidentOccurred?formal:null,
-   school_incident_process_completed:incidentOccurred?(formal==="Completed"?true:formal==="To be completed"?false:null):null
+   school_incident_process_completed:incidentOccurred?(formal==="Completed"?true:formal==="To be completed"?false:null):null,
+   completed_by:document.getElementById("incidentCompletedBy").value.trim()||null
  },{onConflict:"tracker_day_id"});
  if(error){alert("Incident section could not be saved: "+error.message);return false;}
  if(reload){await loadRecords();showToast("Incident section saved");}
@@ -468,11 +475,13 @@ function editRecord(date){
  document.getElementById("homeMorning").value=record.parent?.morning||"";
  document.getElementById("medication").value=record.parent?.medication||"";
  document.getElementById("parentComment").value=record.parent?.comment||"";
+ document.getElementById("morningCompletedBy").value=record.parent?.completedBy||"";
  checkpoints.forEach(cp=>{
    const d=record.checkpoints?.[cp.key]||{};
    setRadio(cp.key+"_participation",d.participation||"");
    setRadio(cp.key+"_regulation",d.regulation||"");
    document.getElementById(cp.key+"_comment").value=d.comment||"";
+   document.getElementById(cp.key+"_completedBy").value=d.completedBy||"";
    setCheckedValues(cp.key+"_context",d.contextFactors||[]);
    setCheckedValues(cp.key+"_strategy",d.supportStrategies||[]);
    setRadio(cp.key+"_effect",d.supportEffect||"");
@@ -488,6 +497,7 @@ function editRecord(date){
  document.getElementById("incidentDescription").value=record.incident?.description||"";
  document.getElementById("incidentAfter").value=record.incident?.after||"";
  document.getElementById("formalProcess").value=record.incident?.formalProcess||"";
+ document.getElementById("incidentCompletedBy").value=record.incident?.completedBy||"";
  toggleIncident();
  window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -495,6 +505,7 @@ function editRecord(date){
 function resetForm(){
  document.querySelectorAll('input[type=radio]').forEach(x=>x.checked=false);
  document.querySelectorAll("textarea").forEach(x=>x.value="");
+ ["morningCompletedBy","incidentCompletedBy",...checkpoints.map(cp=>cp.key+"_completedBy")].forEach(id=>{const x=document.getElementById(id);if(x)x.value=""});
  document.querySelectorAll("select").forEach(x=>{
    if(x.id!=="participant") x.value="";
  });
@@ -528,6 +539,7 @@ function renderDailyTrail(){
      const context=(d.contextFactors||[]).map(v=>contextLabels[v]||v);
      const strategies=(d.supportStrategies||[]).map(v=>strategyLabels[v]||v);
      const supportParts=[];
+     if(d.completedBy)supportParts.push("Recorded by: "+d.completedBy);
      if(context.length)supportParts.push("Context: "+context.join(", "));
      if(strategies.length)supportParts.push("Tried: "+strategies.join(", "));
      if(d.supportEffect)supportParts.push("Response: "+(effectLabels[d.supportEffect]||d.supportEffect));
