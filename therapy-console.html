@@ -10,6 +10,8 @@
 function createClient(url,key){
   const root=url.replace(/\/$/,'');
   const storageKey='wk-therapy-auth-v2-'+new URL(root).host;
+  // Share the existing Track @ Whiz Kids Supabase JS session across pages on this origin.
+  const sharedKey='sb-'+new URL(root).hostname.split('.')[0]+'-auth-token';
   let authState=null;
   try{authState=JSON.parse(localStorage.getItem(storageKey)||'null')}catch(e){localStorage.removeItem(storageKey)}
   function saveAuth(x){
@@ -26,7 +28,16 @@ function createClient(url,key){
       return {data,error:null};
     }catch(e){return{data:null,error:{message:'Unable to reach Supabase: '+e.message}}}
   }
+  function importTrackSession(){
+    try{
+      const shared=JSON.parse(localStorage.getItem(sharedKey)||'null');
+      if(!shared?.access_token || !shared?.refresh_token || !shared?.user?.id)return;
+      const sharedExpiry=Number(shared.expires_at||0)*1000;
+      if(!authState || authState.user?.id!==shared.user.id || sharedExpiry>Number(authState.expires_at||0)+5000)saveAuth(shared);
+    }catch(_err){/* No shared session yet. */}
+  }
   async function session(){
+    importTrackSession();
     if(!authState)return {data:{session:null},error:null};
     if(authState.expires_at < Date.now()+90000){
       const r=await authCall('token?grant_type=refresh_token',{refresh_token:authState.refresh_token});
@@ -34,6 +45,12 @@ function createClient(url,key){
       saveAuth(r.data);
     }
     return{data:{session:authState?{...authState}:null},error:null};
+  }
+  async function signInWithOtp({email,options={}}){
+    // Use the already-working Track homepage as the allowed email-link destination.
+    const target=options.emailRedirectTo || 'https://whizkidal.github.io/Track-WhizKids/';
+    const query='otp?redirect_to='+encodeURIComponent(target);
+    return await authCall(query,{email,create_user:options.shouldCreateUser===true});
   }
   async function signInWithPassword({email,password}){
     const r=await authCall('token?grant_type=password',{email,password});
@@ -45,6 +62,7 @@ function createClient(url,key){
     const token=authState?.access_token;
     if(token)await authCall('logout',{},token);
     saveAuth(null);
+    localStorage.removeItem(sharedKey);
     return{error:null};
   }
   class Query{
@@ -80,14 +98,14 @@ function createClient(url,key){
     }
     then(resolve,reject){return this.execute().then(resolve,reject)}
   }
-  return {auth:{getSession:session,signInWithPassword,signOut},from:(table)=>new Query(table)};
+  return {auth:{getSession:session,signInWithOtp,signInWithPassword,signOut},from:(table)=>new Query(table)};
 }
 window.supabase={createClient};
 })();
 </script></head><body>
 <header class="top"><div class="brand">Whiz Kids <small>THERAPY CONSOLE • CLINICIAN WORKSPACE</small></div><div class="row" style="flex:0"><span class="pill" id="statusPill">Demo mode</span><button class="tiny" id="refreshBtn" style="display:none">Refresh records</button><button class="tiny" id="logoutBtn" style="display:none">Sign out</button></div></header>
 <div class="shell"><div class="headline"><div><h1>Evidence → practice → progress.</h1><p class="sub">One place for the session procedure, target sets, cues, trials, and longitudinal review.</p></div><div class="pill green">LIVE WEB EDITION · connected to Supabase</div></div>
-<section id="login" class="panel unauth"><h2>Start safely</h2><p class="helper">Try a synthetic demo without saving data. For real clinical recording, sign in to the existing Track @ Whiz Kids Supabase project. Therapy data are stored in separate owner-restricted tables.</p><div class="row"><button id="loginShowBtn">Clinician sign in</button><button id="demoBtn" class="ghost">Demonstration (not saved)</button></div><div id="loginBox" class="hide"><label>Email</label><input type="email" id="email" autocomplete="username"><label>Password</label><input type="password" id="password" autocomplete="current-password"><button id="loginBtn" style="margin-top:12px;width:100%">Sign in</button><p class="helper">Use an existing approved Supabase Auth clinician login. Passwords are not saved in this HTML file.</p></div><p class="status" id="loginStatus"></p><div class="notice">Privacy: Do not enter real child names or speech records in Demo mode. Demo entries are session-only and are not persisted.</div></section>
+<section id="login" class="panel unauth"><h2>Start safely</h2><p class="helper">Try a synthetic demo without saving data. For real clinical recording, sign in to the existing Track @ Whiz Kids Supabase project. Therapy data are stored in separate owner-restricted tables.</p><div class="row"><button id="loginShowBtn">Clinician sign in</button><button id="demoBtn" class="ghost">Demonstration (not saved)</button></div><div id="loginBox" class="hide"><label>Track @ Whiz Kids account email</label><input type="email" id="email" autocomplete="username" placeholder="Your approved Track email address"><p class="helper">Use the same email-link sign-in as the main Track application. You do not need your Supabase dashboard password.</p><button id="magicBtn" style="margin-top:12px;width:100%">Email me a secure sign-in link</button><div class="notice ok" style="margin-top:10px">Open the newest email link <strong>on this device</strong>. It will open the main Track page to sign you in. Then return here and press Continue. Your login is shared across these pages.</div><button id="continueBtn" class="ghost" style="margin-top:10px;width:100%">I've opened the link — Continue</button><details style="margin-top:15px"><summary>Use an existing app password instead</summary><label>Track account password (not your Supabase dashboard password)</label><input type="password" id="password" autocomplete="current-password"><button id="loginBtn" style="margin-top:10px;width:100%">Sign in with password</button><p class="helper">Only use this option if an app password has been set for this email address.</p></details></div><p class="status" id="loginStatus"></p><div class="notice">Privacy: Do not enter real child names or speech records in Demo mode. Demo entries are session-only and are not persisted.</div></section>
 <div id="app" class="hide"><div class="layout"><aside class="sidebar">
 <section class="panel"><div class="aside-title">CURRENT CLIENT & PROGRAM</div><label>Client</label><select id="childSelect"></select><button id="addChildBtn" class="ghost tiny wide" style="margin-top:8px">+ Add client</button><label>Program</label><select id="programSelect"></select><button id="addProgramBtn" class="ghost tiny wide" style="margin-top:8px">+ Create target program</button><label>Session</label><select id="sessionSelect"></select><button id="newSessionBtn" class="wide" style="margin-top:8px">+ Start session</button><p class="helper" id="scope">Select a client to begin.</p></section>
 <section class="panel"><div class="aside-title">TODAY'S FOCUS</div><div id="quickFocus" class="helper">/b/ versus /f/, /sp/, /sm/ · monitor /v/ and [d] collapse.</div><hr class="divider"><div class="stat"><strong id="countTrials">0</strong><small>Recorded practice responses in session</small></div><div class="stat" style="margin-top:8px"><strong id="probeCount">0</strong><small>Independent cold probes in session</small></div></section>
@@ -122,7 +140,22 @@ function notify(s,el='#saveStatus'){const e=$(el);if(e)e.textContent=s};
 function setDemo(){demo=true;activeUser={id:'demo'};child={id:'demo-child',client_code:'DEMO-01',display_name:'Synthetic demo child'};children=[child];program={id:'demo-program',child_id:child.id,...structuredClone(proto),version:1};programs=[program];session={id:'demo-session',child_id:child.id,program_id:program.id,session_number:1,session_date:new Date().toISOString().slice(0,10)};sessions=[session];trials=[];$('#statusPill').textContent='Demo • not saved';$('#statusPill').className='pill amber';$('#login').classList.add('hide');$('#app').classList.remove('hide');$('#logoutBtn').style.display='none';renderAll()}
 async function startAuth(){try{if(!window.supabase){$('#loginStatus').textContent='Application failed to initialise.';return}db=window.supabase.createClient(CFG.url,CFG.key);const r=await db.auth.getSession();const s=r.data?.session;if(s?.user){activeUser=s.user;await enterLive()}else if(r.error){$('#loginStatus').textContent='Please sign in: '+r.error.message}}catch(e){$('#loginStatus').textContent='Connection error: '+e.message}}
 async function enterLive(){demo=false;$('#login').classList.add('hide');$('#app').classList.remove('hide');$('#logoutBtn').style.display='inline-block';$('#refreshBtn').style.display='inline-block';$('#statusPill').textContent='Connected securely';$('#statusPill').className='pill green';await loadChildren()}
-async function authLogin(){if(!db)await startAuth();let e=$('#email').value.trim(),p=$('#password').value;$('#loginStatus').textContent='Checking credentials…';$('#loginBtn').disabled=true;try{const {data,error}=await db.auth.signInWithPassword({email:e,password:p});if(error){$('#loginStatus').textContent='Sign-in failed: '+error.message;return}activeUser=data.user;await enterLive()}catch(err){$('#loginStatus').textContent='Sign-in error: '+err.message}finally{$('#loginBtn').disabled=false}}
+async function authLogin(){if(!db)await startAuth();let e=$('#email').value.trim(),p=$('#password').value;$('#loginStatus').textContent='Checking app credentials…';$('#loginBtn').disabled=true;try{const {data,error}=await db.auth.signInWithPassword({email:e,password:p});if(error){$('#loginStatus').textContent='Password sign-in failed: '+error.message+'. The main Track app normally uses a secure email link instead.';return}activeUser=data.user;await enterLive()}catch(err){$('#loginStatus').textContent='Sign-in error: '+err.message}finally{$('#loginBtn').disabled=false}}
+async function sendMagicLink(){
+  if(!db)await startAuth();
+  const email=$('#email').value.trim();
+  if(!email || !email.includes('@')){$('#loginStatus').textContent='Enter your approved Track email address first.';return}
+  $('#magicBtn').disabled=true;$('#loginStatus').textContent='Requesting a secure email sign-in link…';
+  try{
+    const {error}=await db.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:'https://whizkidal.github.io/Track-WhizKids/'}});
+    $('#loginStatus').textContent=error?'Could not send link: '+error.message:'Link requested. Open the newest email on this device, sign in on the Track page, then return here and select Continue.';
+  }catch(err){$('#loginStatus').textContent='Email-link error: '+err.message}
+  finally{$('#magicBtn').disabled=false}
+}
+async function continueTrackLogin(){
+  await startAuth();
+  if(!activeUser)$('#loginStatus').textContent='No Track sign-in found yet. Finish opening the email link on this browser, then try Continue again.';
+}
 async function api(table){const {data,error}=await db.from(table).select('*');if(error)throw error;return data||[]}
 async function loadChildren(){try{children=await api('therapy_children');child=children.find(x=>x.id===child?.id)||children[0]||null;await loadPrograms()}catch(e){alert('Could not load client records: '+e.message)}}
 async function loadPrograms(){if(!child){programs=[];program=null;sessions=[];session=null;trials=[];renderAll();return}try{if(!demo){const r=await db.from('therapy_programs').select('*').eq('child_id',child.id).order('created_at',{ascending:false});if(r.error)throw r.error;programs=r.data||[]}program=programs.find(x=>x.id===program?.id)||programs[0]||null;await loadSessions()}catch(e){alert('Could not load programs: '+e.message)}}
@@ -153,5 +186,5 @@ async function saveProgram(){if(!program)return;const t=parseLines($('#targetTex
 function renderHistory(){let all=trials;$('#hTotal').textContent=all.length;$('#hCold').textContent=all.filter(x=>x.task_kind==='cold_probe').length;$('#hTraining').textContent=all.filter(x=>x.task_kind==='training').length;let groups=new Map;for(let x of all.filter(x=>x.task_kind==='cold_probe'&&x.cue_condition==='independent')){const sn=sessions.find(s=>s.id===x.session_id)?.session_number||'?';let key='S'+sn+'|'+(x.target_code||'?');let r=groups.get(key)||{sn,t:x.target_code||'?',c:0,n:0};r.n++;if(x.onset_quality==='accurate')r.c++;groups.set(key,r)}$('#coldSummary').innerHTML=groups.size?`<table><tr><th>Session</th><th>Target</th><th>Accurate / assessed</th><th>%</th></tr>${[...groups.values()].sort((a,b)=>a.sn-b.sn).map(g=>`<tr><td>${g.sn}</td><td>${esc(g.t)}</td><td>${g.c}/${g.n}</td><td>${Math.round(g.c/g.n*100)}%</td></tr>`).join('')}</table>`:'<p class="helper">Cold, independent probes appear here once entered.</p>';$('#historyTable').innerHTML=all.length?`<table><tr><th>Date</th><th>Task</th><th>Word</th><th>Onset</th><th>Cue</th><th>Form</th><th>Other notes</th></tr>${all.slice(0,100).map(r=>`<tr><td>${esc((r.created_at||'').slice(0,10))}</td><td>${esc(r.task_kind)}</td><td>${esc(r.intended_word||'')}</td><td>${esc(r.onset_quality)}</td><td>${esc(r.cue_condition)}</td><td>${esc(r.spoken_form||'')}</td><td>${esc([r.other_errors,r.notes].filter(Boolean).join('; '))}</td></tr>`).join('')}</table>`:'<p class="helper">No clinical data entered.</p>'}
 function exportRows(type){let a=trials;if(!a.length)return alert('No rows to export.');let content,mime,file;if(type==='json'){content=JSON.stringify({client_code:child?.client_code,program:program?.title,exported:new Date().toISOString(),trials:a},null,2);mime='application/json';file='therapy_trials.json'}else{let fields=['created_at','session_id','task_kind','target_code','intended_word','spoken_form','onset_quality','vowel_quality','other_errors','transition_quality','breakdown','cue_condition','task_level','activity','notes'];content=fields.join(',')+'\n'+a.map(r=>fields.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(',')).join('\n');mime='text/csv';file='therapy_trials.csv'}const link=document.createElement('a');link.href=URL.createObjectURL(new Blob([content],{type:mime}));link.download=file;link.click();URL.revokeObjectURL(link.href)}
 function switchTab(t){tab=t;$$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));$$('.tabpane').forEach(x=>x.classList.toggle('hide',x.id!==t));if(t==='record')setKind(kind)}
-$('#demoBtn').onclick=setDemo;$('#loginShowBtn').onclick=()=>$('#loginBox').classList.toggle('hide');$('#loginBtn').onclick=authLogin;$('#logoutBtn').onclick=async()=>{if(db)await db.auth.signOut();location.reload()};$('#refreshBtn').onclick=async()=>{await loadChildren();notify('Fetched current records from Supabase.')};$('#addChildBtn').onclick=addChild;$('#addProgramBtn').onclick=addProgram;$('#newSessionBtn').onclick=addSession;$('#childSelect').onchange=async e=>{child=children.find(x=>x.id===e.target.value);program=null;session=null;await loadPrograms()};$('#programSelect').onchange=async e=>{program=programs.find(x=>x.id===e.target.value);session=null;await loadSessions()};$('#sessionSelect').onchange=e=>{session=sessions.find(x=>x.id===e.target.value);renderAll()};$$('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$$('[data-kind]').forEach(b=>b.onclick=()=>setKind(b.dataset.kind));$('#saveTrialBtn').onclick=saveTrial;$('#saveFiveBtn').onclick=saveFive;$('#commitFive').onclick=commitFive;$('#cancelFive').onclick=()=>$('#fivePanel').classList.add('hide');$('#clearTrialBtn').onclick=clearTrial;$('#saveProgramBtn').onclick=saveProgram;$('#exportCsv').onclick=()=>exportRows('csv');$('#exportJson').onclick=()=>exportRows('json');$('#printParent').onclick=()=>window.print();setKind('cold_probe');startAuth();
+$('#demoBtn').onclick=setDemo;$('#loginShowBtn').onclick=()=>$('#loginBox').classList.toggle('hide');$('#loginBtn').onclick=authLogin;$('#magicBtn').onclick=sendMagicLink;$('#continueBtn').onclick=continueTrackLogin;window.addEventListener('focus',()=>{if(!activeUser && !demo && db)startAuth()});$('#logoutBtn').onclick=async()=>{if(db)await db.auth.signOut();location.reload()};$('#refreshBtn').onclick=async()=>{await loadChildren();notify('Fetched current records from Supabase.')};$('#addChildBtn').onclick=addChild;$('#addProgramBtn').onclick=addProgram;$('#newSessionBtn').onclick=addSession;$('#childSelect').onchange=async e=>{child=children.find(x=>x.id===e.target.value);program=null;session=null;await loadPrograms()};$('#programSelect').onchange=async e=>{program=programs.find(x=>x.id===e.target.value);session=null;await loadSessions()};$('#sessionSelect').onchange=e=>{session=sessions.find(x=>x.id===e.target.value);renderAll()};$$('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));$$('[data-kind]').forEach(b=>b.onclick=()=>setKind(b.dataset.kind));$('#saveTrialBtn').onclick=saveTrial;$('#saveFiveBtn').onclick=saveFive;$('#commitFive').onclick=commitFive;$('#cancelFive').onclick=()=>$('#fivePanel').classList.add('hide');$('#clearTrialBtn').onclick=clearTrial;$('#saveProgramBtn').onclick=saveProgram;$('#exportCsv').onclick=()=>exportRows('csv');$('#exportJson').onclick=()=>exportRows('json');$('#printParent').onclick=()=>window.print();setKind('cold_probe');startAuth();
 </script></body></html>
