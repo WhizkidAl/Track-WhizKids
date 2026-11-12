@@ -4,7 +4,7 @@ const vc=new VirtualConsole();const errors=[];vc.on('jsdomError',e=>errors.push(
 const client={auth:{getSession:async()=>({data:{session:null},error:null}),onAuthStateChange:()=>{},signOut:async()=>{}},rpc:async(name,args)=>{rpcCalls.push(args);return typeof rpcData==='function'?rpcData():rpcData}};
 const dom=new JSDOM(html,{url:'https://pats.test/portable-practice.html',runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.supabase={createClient:()=>client};w.indexedDB={open(){throw Error('test journal is injected')}};w.fetch=async()=>({ok:true,text:async()=>template});w.open=()=>{};w.confirm=()=>true;}});
 const w=dom.window,e=x=>w.eval(x);const script=w.document.createElement('script');script.textContent=code;w.document.body.append(script);e('journal=async(mode,key,value)=>{if(mode==="get")return window.testMemory.get(key);if(mode==="delete")return window.testMemory.delete(key);window.testMemory.set(key,value)}');w.testMemory=memory;
-(async()=>{await new Promise(r=>setTimeout(r,0));e('hub={participant_id:"one",configuration:{backupKind:"test-backup"},snapshot:null,audio:{},revision:0};user={id:"test-user",email:"test@example.test"};revision=0;window.PAT_CLOUD.ready=true');
+(async()=>{await new Promise(r=>setTimeout(r,0));e('hub={participant_id:"one",access_role:"parent",configuration:{backupKind:"test-backup"},snapshot:null,audio:{},revision:0};user={id:"test-user",email:"test@example.test"};revision=0;window.PAT_CLOUD.ready=true');
 assert.equal(JSON.parse(e('scriptJSON("<script>$&</script>")')),'<script>$&</script>');assert(!e('scriptJSON("<script>")').includes('<'));
 await e('queue("one",{version:4,entries:[]},{})');assert(memory.get('pending:one'));await e('flush()');assert.equal(e('revision'),1);assert.equal(e('pending'),null);assert.equal(rpcCalls.length,1);
 await e('queue("wrong-participant",{version:4,entries:[{id:"wrong"}]},{})');assert.equal(e('pending'),null);assert.equal(rpcCalls.length,1);
@@ -16,4 +16,18 @@ rpcData={data:{conflict:false,revision:4,saved_at:new Date().toISOString()},erro
 w.document.getElementById('parent-email').value='qa-parent@example.invalid';w.document.getElementById('parent-access').dispatchEvent(new w.Event('submit',{cancelable:true}));await new Promise(r=>setTimeout(r,0));assert.equal(rpcCalls.at(-1).p_email,'qa-parent@example.invalid');assert.equal(rpcCalls.at(-1).p_participant_id,'one');
 const cfg={participantLabel:'<script>$&</script>',participantId:'one',inlineAssets:{},backupKind:'test'};w.mountRow={participant_id:'one',configuration:cfg,snapshot:{version:4,entries:[],comment:'$&</script>'},audio:{},revision:4};memory.delete('pending:one');await e('mount(window.mountRow)');const src=w.document.getElementById('app').srcdoc;assert(!src.includes('<script>$&</script>'));const embedded=src.match(/<script id="hub-config" type="application\/json">([\s\S]*?)<\/script>/)[1];assert.equal(JSON.parse(embedded).participantLabel,cfg.participantLabel);assert(src.includes('pats-hub-v4:one'));assert(!src.includes('"__PRIVATE_CONFIGURATION__"'));
 for(const p of ['portable-practice.html','portable-practice-cloud.js','portable-practice-app.html','supabase/portable_practice_schema.sql','supabase/pat_foundation.sql']){const s=fs.readFileSync(R+'/'+p,'utf8');assert(!/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i.test(s),'hardcoded participant or user ID: '+p);assert(!/data:image\/(?:png|webp|jpeg);base64,[a-z0-9+/=]{80}/i.test(s),'embedded private image: '+p)}
+// Tablet accounts must not expose or submit family access controls.
+w.mountRow.access_role='tablet';await e('mount(window.mountRow)');
+assert.equal(w.document.getElementById('parent-management').hidden,true);
+assert.equal(w.document.getElementById('account-open').textContent,'Device connection');
+const callsBeforeTabletInvite=rpcCalls.length;
+w.document.getElementById('parent-access').dispatchEvent(new w.Event('submit',{cancelable:true}));
+await new Promise(r=>setTimeout(r,0));assert.equal(rpcCalls.length,callsBeforeTabletInvite);
+w.mountRow.access_role='parent';await e('mount(window.mountRow)');
+assert.equal(w.document.getElementById('parent-management').hidden,false);
+const selectedTables=[];
+client.from=table=>({select(){return this},eq(){return this},async single(){selectedTables.push(table);return {data:table==='participant_access'?{access_role:'tablet'}:w.mountRow,error:null}}});
+await e('loadHub("one")');assert.deepEqual(selectedTables,['pat_hubs','participant_access']);
+assert.equal(e('hub.access_role'),'tablet');assert.equal(w.document.getElementById('parent-management').hidden,true);
 assert.deepEqual(errors,[]);fs.writeFileSync(R+'/test-result.json',JSON.stringify({passed:true,checks:['cloud save','wrong participant guard','offline journal retained','retry clears journal','conflict retains both copies','in-flight edit retained','revision advanced before retry','private configuration escaping','public source privacy audit'],errors},null,2));console.log('PASS cloud integration and privacy checks');w.close();})().catch(err=>{console.error(err);w.close();process.exitCode=1});
+

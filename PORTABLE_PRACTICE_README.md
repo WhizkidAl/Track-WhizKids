@@ -60,3 +60,10 @@ Install on the Android tablet. If an app is already installed, use Google Play's
 ## Verification limits
 
 Cloud queue, offline retention, retry, conflicting revisions, edits during an in-flight save, cross-participant guarding, escaping and public-source privacy were checked using the actual application scripts in DOM tests. Database access rules and save behaviour were checked in the live project within a rollback transaction. Parent access attachment, parent invitations and unauthorised-access denial were also tested in a rollback transaction in the new PAT project. Tablet installation and end-to-end family sign-in remain device checks; authentication redirect configuration and first family sign-in are not complete. Accumulated tablet history must still come from its Full backup.
+
+## Tablet-only accounts
+
+Apply `supabase/tablet_access.sql` after the foundation and hub schemas. A tablet account can read only its assigned child hub and save snapshots/audio through the revision-checked save function. It has no direct hub update policy, cannot change protected configuration, and cannot invite parents or change access roles. Parent and clinician account permissions remain separate. The interface hides account invitation controls for tablet accounts; server permissions enforce the restriction independently.
+
+Email delivery uses the separately configured Resend SMTP connection. First sign-in still requires email verification. The source contains no account credentials or participant data.
+
