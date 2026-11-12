@@ -1,0 +1,11 @@
+{
+  "name": "whiz-kids-track-checks",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node tests/portable-practice.test.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}
