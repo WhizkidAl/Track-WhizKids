@@ -18,3 +18,7 @@ Whole-Day Participation & Regulation Tracker.
 GitHub = code.
 Supabase = structured app data and permissions.
 SharePoint / Halaxy = formal clinical/document record as appropriate.
+
+## Portable practice module
+The Supabase-backed My Base child interface is prepared in `portable-practice.html`. See [portable practice setup and verification](PORTABLE_PRACTICE_README.md) for data boundaries, migration status, pending-save handling and tablet installation.
+
