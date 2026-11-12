@@ -6,7 +6,7 @@ This module connects the child interface to Supabase authentication, participant
 
 The dedicated PAT @ Whiz Kids Supabase project is created in Sydney. Its foundation and portable-hub schemas are installed. Authorised save, structured record creation, history, version conflict and unrelated-account denial were checked in a transaction that was rolled back. No test activity records remain.
 
-The project destination is selected. Private participant configuration import and actual account assignment are paused pending explicit approval. The incomplete import buffer was cleared. This branch is not a published replacement for the existing child app.
+The initial private participant configuration is imported and its SHA-256 checksum was verified against the source. Clinician access is pre-authorised for the approved email and attaches after verified account registration. The import buffer is cleared. This branch is not a published replacement for the existing child app.
 
 ## Files
 
@@ -59,4 +59,4 @@ Install on the Android tablet. If an app is already installed, use Google Play's
 
 ## Verification limits
 
-Cloud queue, offline retention, retry, conflicting revisions, edits during an in-flight save, cross-participant guarding, escaping and public-source privacy were checked using the actual application scripts in DOM tests. Database access rules and save behaviour were checked in the live project within a rollback transaction. Parent access attachment, parent invitations and unauthorised-access denial were also tested in a rollback transaction in the new PAT project. Tablet installation and end-to-end family sign-in remain device checks; authentication redirect configuration and private participant migration are not complete.
+Cloud queue, offline retention, retry, conflicting revisions, edits during an in-flight save, cross-participant guarding, escaping and public-source privacy were checked using the actual application scripts in DOM tests. Database access rules and save behaviour were checked in the live project within a rollback transaction. Parent access attachment, parent invitations and unauthorised-access denial were also tested in a rollback transaction in the new PAT project. Tablet installation and end-to-end family sign-in remain device checks; authentication redirect configuration and first family sign-in are not complete. Accumulated tablet history must still come from its Full backup.
