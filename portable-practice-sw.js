@@ -1,4 +1,4 @@
-const CACHE='pats-shell-20261114-1',FILES=['portable-practice.html','portable-practice-cloud.js','portable-practice-app.html','portable-practice.webmanifest','icons/my-base-192.png','icons/my-base-512.png','icons/my-base-maskable-512.png'];
+const CACHE='pats-shell-20261114-2',FILES=['portable-practice.html','portable-practice-cloud.js','portable-practice-app.html','portable-practice.webmanifest','icons/my-base-snake-192.png','icons/my-base-snake-512.png','icons/my-base-snake-maskable-512.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
 self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||u.origin!==self.location.origin||!FILES.some(f=>u.pathname.endsWith('/'+f)))return;e.respondWith(fetch(e.request,{cache:'no-cache'}).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy))}return r}).catch(()=>caches.match(e.request)))});

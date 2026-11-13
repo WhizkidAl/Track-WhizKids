@@ -5,13 +5,27 @@
   "start_url": "./portable-practice.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0b1223",
-  "theme_color": "#101a30",
+  "background_color": "#142B24",
+  "theme_color": "#142B24",
   "description": "My day, my choices and my support",
   "icons": [
-    {"src":"icons/my-base-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
-    {"src":"icons/my-base-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
-    {"src":"icons/my-base-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+    {
+      "src": "icons/my-base-snake-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/my-base-snake-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/my-base-snake-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
-
