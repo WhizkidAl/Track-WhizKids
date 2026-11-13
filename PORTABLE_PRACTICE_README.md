@@ -6,7 +6,7 @@ This module connects the child interface to Supabase authentication, participant
 
 The dedicated PAT @ Whiz Kids Supabase project is created in Sydney. Its foundation and portable-hub schemas are installed. Authorised save, structured record creation, history, version conflict and unrelated-account denial were checked in a transaction that was rolled back. No test activity records remain.
 
-The initial private participant configuration is imported and its SHA-256 checksum was verified against the source. Clinician access is pre-authorised for the approved email and attaches after verified account registration. The import buffer is cleared. This branch is not a published replacement for the existing child app.
+The initial private participant configuration is imported and its SHA-256 checksum was verified against the source. Clinician access is pre-authorised for the approved email and attaches after verified account registration. The import buffer is cleared. The online app is published at https://whizkidal.github.io/Track-WhizKids/portable-practice.html. The family confirmed the child account opens My Base, shows Saved to cloud and installs on the Samsung tablet.
 
 ## Files
 
@@ -21,7 +21,7 @@ The initial private participant configuration is imported and its SHA-256 checks
 
 Apply `supabase/pat_foundation.sql` before `supabase/portable_practice_schema.sql` on a fresh PAT project. Do not apply the foundation to an existing Track database.
 
-`pat_hubs` holds the private configuration, current snapshot and family recordings. Its rows are limited to authorised parents and clinicians with view access. Saving also requires write permission.
+`pat_hubs` holds the private configuration, current snapshot and family recordings. Its rows are limited to authorised parents, clinicians and assigned tablet accounts with view access. Saving also requires write permission.
 
 `pat_activity_records` makes feedback, approval status, dates, observed engagement and support available as structured records. The full record retains task details, child feedback and coin corrections. Authorised team members with participant view access can read these activity records.
 
@@ -41,7 +41,7 @@ Browser data deletion before a pending change syncs can still lose that pending 
 
 1. Confirm approval to import the participant’s private configuration and assign the named accounts. The destination is the dedicated PAT @ Whiz Kids project in Sydney.
 2. Provision the private hub configuration outside Git, with participant access assigned to verified accounts.
-3. In Supabase Authentication URL Configuration, set the published PAT page as the Site URL and an allowed redirect URL. This dashboard step is not complete. Sign in to the PAT app with a pre-authorised clinician account, then use Family connection to allow the verified parent email. First sign-in creates the account; matching pending permissions attach automatically. Load the module using that authorised parent account on the child device. Do not leave a clinician account with access to other participants signed in on the child's tablet.
+3. In Supabase Authentication URL Configuration, set the published PAT page as the Site URL and an allowed redirect URL. This dashboard step is complete for the published app. Sign in to the PAT app with a pre-authorised clinician account, then use Family connection to allow the verified parent email. First sign-in creates the account; matching pending permissions attach automatically. Load the module using that authorised parent account on the child device. Do not leave a clinician account with access to other participants signed in on the child's tablet.
 4. Make a Full backup in the old child app. Restore it in the connected app, then confirm the cloud saved status and record totals.
 5. Keep the old backup until records, routines, settings and family recordings are checked.
 6. Publish the reviewed code and add the stable page to the device's Home screen. Lock the Home screen layout if appropriate for the family.
@@ -59,7 +59,7 @@ Install on the Android tablet. If an app is already installed, use Google Play's
 
 ## Verification limits
 
-Cloud queue, offline retention, retry, conflicting revisions, edits during an in-flight save, cross-participant guarding, escaping and public-source privacy were checked using the actual application scripts in DOM tests. Database access rules and save behaviour were checked in the live project within a rollback transaction. Parent access attachment, parent invitations and unauthorised-access denial were also tested in a rollback transaction in the new PAT project. Tablet installation and end-to-end family sign-in remain device checks; authentication redirect configuration and first family sign-in are not complete. Accumulated tablet history must still come from its Full backup.
+Cloud queue, offline retention, retry, conflicting revisions, edits during an in-flight save, cross-participant guarding, escaping and public-source privacy were checked using the actual application scripts in DOM tests. Database access rules and save behaviour were checked in the live project within a rollback transaction. Parent access attachment, parent invitations and unauthorised-access denial were also tested in a rollback transaction in the new PAT project. The family confirmed child sign-in, the cloud status and Android installation. New help emails and the parent PIN reset require a final device check.
 
 ## Tablet-only accounts
 
@@ -67,3 +67,10 @@ Apply `supabase/tablet_access.sql` after the foundation and hub schemas. A table
 
 Email delivery uses the separately configured Resend SMTP connection. First sign-in still requires email verification. The source contains no account credentials or participant data.
 
+## Help email and parent PIN
+
+Apply supabase/help_and_pin.sql after tablet_access.sql. The pat-help Edge Function verifies the bearer token with Auth, authorises participant membership through a server-only function, takes the recipient from private notification preferences, and uses Resend with an idempotency key. Requests are limited to one per minute and ten per hour. The browser cannot select a recipient or directly prepare/complete mail records. Deploy the function with its own authentication enabled in the body (gateway verify_jwt=false). RESEND_API_KEY is preferred; the existing secret named PAT Base key is supported. Never put the key or participant preferences in source control.
+
+Only a parent or clinician with write access can use Family connection to set a salted SHA-256 Family PIN. Tablet saves preserve the server PIN and salt, including retry comparisons. This is a family interface approval control, separate from account authentication and Google Family Link.
+
+The current child interface includes a therapy and school gateway and a reptile welcome theme. Speech tools remain separate, with their own browser recording storage.
