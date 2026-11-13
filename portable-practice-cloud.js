@@ -28,7 +28,17 @@ async function mount(row){
  await journal('set','last:'+user.id,row).catch(()=>{});status(pending?'Saved here · waiting to sync':'Cloud connected');
 }
 async function loadHub(pid){if(hub&&hub.participant_id!==pid&&pending){await flush();if(pending)throw Error('Sync or download the current workspace before switching.')}status('Loading private workspace…');const {data,error}=await db.from('pat_hubs').select('participant_id,configuration,snapshot,audio,revision').eq('participant_id',pid).single();if(error)throw error;const access=await db.from('participant_access').select('access_role').eq('participant_id',pid).eq('user_id',user.id).single();if(access.error)throw access.error;await mount({...data,access_role:access.data.access_role})}
-async function participants(){const {data,error}=await db.from('pat_hubs').select('participant_id,participants(display_name)').order('updated_at',{ascending:false});if(error)throw error;const select=el('choose');select.replaceChildren(new Option('Choose…',''));for(const h of data||[])select.add(new Option(h.participants?.display_name||'My Base',h.participant_id));el('choose-wrap').hidden=false;if(data?.length===1){select.value=data[0].participant_id;await loadHub(select.value)}else el('auth-status').textContent=data?.length?'Choose the workspace to open.':'No workspace has been assigned to this account. Ask the family or clinician to arrange access.'}
+async function participants(){
+ el('choose-wrap').hidden=true;el('switch').hidden=true;
+ const {data,error}=await db.from('pat_hubs').select('participant_id,participants(display_name)').order('updated_at',{ascending:false});if(error)throw error;
+ const select=el('choose');select.replaceChildren(new Option('Choose…',''));
+ for(const h of data||[])select.add(new Option(h.participants?.display_name||'My Base',h.participant_id));
+ if(data?.length===1){
+  select.value=data[0].participant_id;el('auth-status').textContent='Opening My Base…';await loadHub(select.value);return;
+ }
+ el('choose-wrap').hidden=!data?.length;el('switch').hidden=!data?.length;
+ el('auth-status').textContent=data?.length?'Choose the workspace to open.':'No workspace has been assigned to this account. Ask the family or clinician to arrange access.';
+}
 async function signedIn(session){user=session?.user||null;if(!user){el('login').hidden=false;el('app').hidden=true;el('connection').hidden=true;return}el('signin').hidden=true;el('auth-status').textContent='Signed in. Loading your workspaces…';try{await participants()}catch(e){const cached=await journal('get','last:'+user.id).catch(()=>null);if(cached){await mount(cached);status('Offline copy · changes will wait for connection')}else el('auth-status').textContent=e.message}}
 el('signin').onsubmit=async e=>{e.preventDefault();el('auth-status').textContent='Signing in…';const {data,error}=await db.auth.signInWithPassword({email:el('email').value.trim(),password:el('password').value});el('password').value='';if(error){el('auth-status').textContent=error.message;return}await signedIn(data.session)};
 el('magic').onclick=async()=>{if(!el('email').reportValidity())return;const {error}=await db.auth.signInWithOtp({email:el('email').value.trim(),options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}});el('auth-status').textContent=error?error.message:'Sign-in link sent. Open the newest email on this device.'};

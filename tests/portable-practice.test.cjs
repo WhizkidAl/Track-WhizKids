@@ -29,5 +29,18 @@ const selectedTables=[];
 client.from=table=>({select(){return this},eq(){return this},async single(){selectedTables.push(table);return {data:table==='participant_access'?{access_role:'tablet'}:w.mountRow,error:null}}});
 await e('loadHub("one")');assert.deepEqual(selectedTables,['pat_hubs','participant_access']);
 assert.equal(e('hub.access_role'),'tablet');assert.equal(w.document.getElementById('parent-management').hidden,true);
+// A signed-in device with one authorised workspace must open it without a name selector.
+let workspaceRows=[{participant_id:'one',participants:{display_name:'One test workspace'}}];
+client.from=table=>({select(){return this},eq(){return this},async order(){return {data:workspaceRows,error:null}},async single(){return {data:table==='participant_access'?{access_role:'tablet'}:w.mountRow,error:null}}});
+await e('signedIn({user:{id:"test-user",email:"test@example.test"}})');
+assert.equal(w.document.getElementById('choose-wrap').hidden,true);
+assert.equal(w.document.getElementById('switch').hidden,true);
+assert.equal(w.document.getElementById('app').hidden,false);
+assert.equal(w.document.getElementById('login').hidden,true);
+assert.equal(e('hub.participant_id'),'one');
+// Accounts with several workspaces retain their chooser; unassigned accounts have none.
+workspaceRows.push({participant_id:'two',participants:{display_name:'Second test workspace'}});
+await e('participants()');assert.equal(w.document.getElementById('choose-wrap').hidden,false);assert.equal(w.document.getElementById('switch').hidden,false);
+workspaceRows=[];await e('participants()');assert.equal(w.document.getElementById('choose-wrap').hidden,true);assert(w.document.getElementById('auth-status').textContent.includes('No workspace'));
 assert.deepEqual(errors,[]);fs.writeFileSync(R+'/test-result.json',JSON.stringify({passed:true,checks:['cloud save','wrong participant guard','offline journal retained','retry clears journal','conflict retains both copies','in-flight edit retained','revision advanced before retry','private configuration escaping','public source privacy audit'],errors},null,2));console.log('PASS cloud integration and privacy checks');w.close();})().catch(err=>{console.error(err);w.close();process.exitCode=1});
 
