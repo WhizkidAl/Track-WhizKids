@@ -24,8 +24,13 @@
 
 <section class="card auth-card">
 <div class="head"><div><div class="kicker" style="color:var(--blue)">Secure access</div><h2>Sign in</h2><p class="copy">Use the email address authorised for this participant.</p></div><span class="badge" id="authBadge">Signed out</span></div>
-<div class="grid" style="margin-top:14px"><label class="field"><span>Email</span><input id="authEmail" type="email" placeholder="you@example.com"></label><div class="actions" style="align-items:end"><button class="btn primary" id="sendLinkBtn" onclick="sendMagicLink()">Send sign-in link</button><button class="btn secondary" id="signOutBtn" style="display:none" onclick="signOut()">Sign out</button></div></div>
-<p class="copy" id="authStatus" style="margin-top:10px">Sign in to load the shared plan.</p>
+<div class="grid" style="margin-top:14px">
+<label class="field"><span>Email</span><input id="authEmail" type="email" placeholder="you@example.com"></label>
+<div class="actions" style="align-items:end"><button class="btn primary" id="sendLinkBtn" onclick="sendMagicLink()">Send sign-in code</button><button class="btn secondary" id="signOutBtn" style="display:none" onclick="signOut()">Sign out</button></div>
+<label class="field" id="otpField"><span>6-digit code</span><input id="authOtp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"></label>
+<div class="actions" id="otpActions" style="align-items:end"><button class="btn primary" id="verifyOtpBtn" onclick="verifyEmailOtp()">Verify code</button></div>
+</div>
+<p class="copy" id="authStatus" style="margin-top:10px">Enter your authorised email, request a code, then type the 6-digit code from the newest email.</p>
 </section>
 
 <section class="card">
@@ -211,17 +216,28 @@ function setAuthStatus(v){document.getElementById("authStatus").textContent=v}
 
 async function sendMagicLink(){
  const email=document.getElementById("authEmail").value.trim();if(!email)return alert("Enter your authorised email address.");
- const btn=document.getElementById("sendLinkBtn");btn.disabled=true;setAuthStatus("Sending secure sign-in link…");
+ const btn=document.getElementById("sendLinkBtn");btn.disabled=true;setAuthStatus("Sending secure sign-in code…");
  const {error}=await db.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
  btn.disabled=false;if(error){setAuthStatus(error.message);return alert(error.message)}
- setAuthStatus("Sign-in link sent. Open the newest email.");toast("Sign-in link sent");
+ setAuthStatus("Code sent. Enter the 6-digit code from the newest email.");toast("Sign-in code sent");
+}
+async function verifyEmailOtp(){
+ const email=document.getElementById("authEmail").value.trim();
+ const token=document.getElementById("authOtp").value.trim();
+ if(!email)return alert("Enter your authorised email address.");
+ if(!/^\\d{6}$/.test(token))return alert("Enter the 6-digit code from your email.");
+ const btn=document.getElementById("verifyOtpBtn");btn.disabled=true;setAuthStatus("Checking code…");
+ const {error}=await db.auth.verifyOtp({email,token,type:"email"});
+ btn.disabled=false;if(error){setAuthStatus(error.message);return alert(error.message)}
+ setAuthStatus("Signed in.");toast("Signed in");
 }
 async function signOut(){await db.auth.signOut();currentUser=null;renderAuth(null);document.getElementById("participant").innerHTML='<option value="">Sign in to load authorised participants…</option>';clearForm()}
 function renderAuth(session){
  currentUser=session?.user||null;
  const b=document.getElementById("authBadge"),out=document.getElementById("signOutBtn"),send=document.getElementById("sendLinkBtn"),email=document.getElementById("authEmail");
- if(currentUser){b.textContent="Signed in";out.style.display="";send.style.display="none";email.value=currentUser.email||"";email.disabled=true;setAuthStatus("Signed in as "+(currentUser.email||"authorised user")+".")}
- else{b.textContent="Signed out";out.style.display="none";send.style.display="";email.disabled=false;setAuthStatus("Sign in to load the shared plan.")}
+ const otpField=document.getElementById("otpField"),otpActions=document.getElementById("otpActions");
+ if(currentUser){b.textContent="Signed in";out.style.display="";send.style.display="none";email.value=currentUser.email||"";email.disabled=true;otpField.style.display="none";otpActions.style.display="none";setAuthStatus("Signed in as "+(currentUser.email||"authorised user")+".")}
+ else{b.textContent="Signed out";out.style.display="none";send.style.display="";email.disabled=false;otpField.style.display="";otpActions.style.display="";setAuthStatus("Enter your authorised email, request a code, then type the 6-digit code from the newest email.")}
 }
 function collectAnswers(){
  const out={};
