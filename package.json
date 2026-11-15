@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "test": "node tests/portable-practice.test.cjs",
-    "test:auth": "node --test tests/email-code-auth.test.cjs"
+    "test:auth": "node --test tests/email-code-auth.test.cjs",
+    "test:consultation": "node tests/consultation-browser.cjs"
   },
   "devDependencies": {
     "jsdom": "26.1.0"

@@ -12,6 +12,7 @@ Shared browser-based tracking tools for Whiz Kids Therapy.
 Whole-Day Participation & Regulation Tracker.
 
 ## Email-code access and planning review
+- [Live team consultation and private mock-run guide](docs/team-consultation-release.md)
 - [Email-code setup and release checks](docs/email-code-rollout.md)
 - [Modular Action Plan proposal and architecture review](docs/modular-action-plan-review.md)
 - [Participant email and device instructions](docs/participant-instructions.md)
