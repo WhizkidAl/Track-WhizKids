@@ -10,7 +10,7 @@ Hello everyone,
 
 Thank you for contributing to the shared tracker. Brief observations from home and school help us understand participation across the day, see what supports appear useful and decide together what to keep or change. Record what went well as well as difficulties. Patterns prompt discussion; they do not prove a cause.
 
-Open the [Whiz Kids tracker](https://whizkidal.github.io/Track-WhizKids/). Use the exact email address authorised for you, select **Send sign-in code**, then enter the six digits from the newest email and select **Verify code**. You can read the email on another device. This is a one-time code, not a password or permanent PIN. Never share it.
+Open the [Whiz Kids tracker](https://whizkidal.github.io/Track-WhizKids/). Use the exact email address authorised for you, select **Send sign-in code**, then enter the digits from the newest email and select **Verify code**. You can read the email on another device. This is a one-time code, not a password or permanent PIN. Never share it.
 
 Select the participant and check the date. Complete your agreed section at the agreed time, then press that section's **Save** button. Wait for confirmation and check the recorded day. Please contact me if it has not appeared. The current tracker has morning information and three school checkpoints: mid-morning, before lunch and end of day; follow the schedule we have agreed for this monitoring period.
 
@@ -48,7 +48,7 @@ Removing an icon/bookmark does not delete cloud records or revoke access. Contac
 
 * **No code:** check the authorised address, junk folder and school email quarantine. Wait at least a minute before requesting another, and use only the newest email. Ask school IT about blocked mail if necessary.
 * **Email contains only a link:** contact Alex; the email template may need updating. Do not copy digits from the link.
-* **Code rejected:** enter all six digits, including any leading zero; check the email address matches. Request a new code if expired. Never forward the code to someone else.
+* **Code rejected:** enter all digits, including any leading zero; check the email address matches. Request a new code if expired. Never forward the code to someone else.
 * **Signed in but no participant:** contact Alex to check the authorised email and participant access; signing in alone does not grant access.
 * **No Add to Home Screen option:** open the normal address directly in Safari/Chrome. If the device is managed, use an approved bookmark.
 * **Save fails or internet drops:** keep the page open, restore the connection and check the recorded day before retrying. Do not assume unsaved entries are retained after closing/reloading. Contact Alex if uncertain.

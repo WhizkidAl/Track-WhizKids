@@ -53,7 +53,7 @@ window.createEmailCodeAuth = function (db, setStatus) {
         nextSend = Date.now() + 60000;
         el('authOtp').value = '';
         el('sendLinkBtn').textContent = 'Send a new code';
-        setStatus('Code requested. Check your inbox and junk folder. Enter the 6-digit code from the newest email here; you can read the email on another device.');
+        setStatus('Code requested. Check your inbox and junk folder. Enter the 6- or 8-digit code from the newest email here; you can read the email on another device.');
         el('authOtp').focus();
       });
     },
@@ -62,8 +62,8 @@ window.createEmailCodeAuth = function (db, setStatus) {
       const email = emailAddress();
       if (!email) return;
       const token = el('authOtp').value.trim();
-      if (!/^\d{6}$/.test(token)) {
-        setStatus('Enter all 6 digits from the newest sign-in email.');
+      if (!/^(?:\d{6}|\d{8})$/.test(token)) {
+        setStatus('Enter all 6 or 8 digits from the newest sign-in email.');
         el('authOtp').focus();
         return;
       }
@@ -77,7 +77,7 @@ window.createEmailCodeAuth = function (db, setStatus) {
       el('otpField').style.display = signedIn ? 'none' : '';
       el('otpActions').style.display = signedIn ? 'none' : '';
       el('authOtp').value = '';
-      if (!signedIn) setStatus('Enter your authorised email, request a code, then enter the 6-digit code here. This is a one-time code, not a permanent PIN.');
+      if (!signedIn) setStatus('Enter your authorised email, request a code, then enter the 6- or 8-digit code here. This is a one-time code, not a permanent PIN.');
     }
   };
 };

@@ -27,10 +27,10 @@
 <div class="grid" style="margin-top:14px">
 <label class="field"><span>Email</span><input id="authEmail" type="email" required placeholder="you@example.com"></label>
 <div class="actions" style="align-items:end"><button class="btn primary" id="sendLinkBtn" onclick="sendMagicLink()">Send sign-in code</button><button class="btn secondary" id="signOutBtn" style="display:none" onclick="signOut()">Sign out</button></div>
-<label class="field" id="otpField"><span>6-digit code</span><input id="authOtp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"></label>
+<label class="field" id="otpField"><span>6- or 8-digit code</span><input id="authOtp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="12345678"></label>
 <div class="actions" id="otpActions" style="align-items:end"><button class="btn primary" id="verifyOtpBtn" onclick="verifyEmailOtp()">Verify code</button></div>
 </div>
-<p class="copy" id="authStatus" role="status" aria-live="polite" style="margin-top:10px">Enter your authorised email, request a code, then type the 6-digit code from the newest email.</p>
+<p class="copy" id="authStatus" role="status" aria-live="polite" style="margin-top:10px">Enter your authorised email, request a code, then type the 6- or 8-digit code from the newest email.</p>
 </section>
 
 <section class="card">
@@ -226,7 +226,7 @@ function renderAuth(session){
  const b=document.getElementById("authBadge"),out=document.getElementById("signOutBtn"),send=document.getElementById("sendLinkBtn"),email=document.getElementById("authEmail");
  const otpField=document.getElementById("otpField"),otpActions=document.getElementById("otpActions");
  if(currentUser){b.textContent="Signed in";out.style.display="";send.style.display="none";email.value=currentUser.email||"";email.disabled=true;otpField.style.display="none";otpActions.style.display="none";setAuthStatus("Signed in as "+(currentUser.email||"authorised user")+".")}
- else{b.textContent="Signed out";out.style.display="none";send.style.display="";email.disabled=false;otpField.style.display="";otpActions.style.display="";setAuthStatus("Enter your authorised email, request a code, then type the 6-digit code from the newest email.")}
+ else{b.textContent="Signed out";out.style.display="none";send.style.display="";email.disabled=false;otpField.style.display="";otpActions.style.display="";setAuthStatus("Enter your authorised email, request a code, then type the 6- or 8-digit code from the newest email.")}
 }
 function collectAnswers(){
  const out={};

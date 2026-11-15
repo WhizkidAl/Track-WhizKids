@@ -23,7 +23,7 @@ test('six digits including leading zero verify as email OTP',async()=>{
  assert.equal(s.elements.authOtp.value,''); assert.equal(s.elements.verifyOtpBtn.disabled,false);
 });
 test('reject malformed codes and invalid email before network call',async()=>{
- const s=setup(); for(const code of ['','12345','1234567','abcdef','12 345']){s.elements.authOtp.value=code;await s.controller.verify()}
+ const s=setup(); for(const code of ['','12345','1234567','123456789','abcdefgh','abcdef','12 345']){s.elements.authOtp.value=code;await s.controller.verify()}
  s.elements.authEmail.value='invalid'; await s.controller.send(); assert.equal(s.calls.length,0);
 });
 test('network and expired-code errors restore controls without leaking response',async()=>{
@@ -50,6 +50,8 @@ test('both pages include shared controller and valid inline JavaScript',()=>{
  assert.match(html,/src="\.\/email-code-auth.js"/);
  for(const id of ['authOtp','otpField','otpActions','verifyOtpBtn'])assert.equal(html.split('id="'+id+'"').length,2);
  for(const script of html.matchAll(/<script>([\s\S]*?)<\/script>/g))new vm.Script(script[1]);
+ assert.match(html,/id="authOtp"[^>]*maxlength="8"/);
+ assert.doesNotMatch(html,/6-digit code/);
  assert.match(html,/emailCodeAuth.render\(!!currentUser\)/);
  }
 });
@@ -69,4 +71,8 @@ test('auth callbacks release the auth lock before loading participants',async()=
   assert.equal(result,undefined);assert.equal(loads,0);locked=false;
   for(const timer of timers)timer();assert.equal(loads,1);
  }
+});
+
+test('eight-digit codes reach Supabase unchanged including leading zero',async()=>{
+ for(const token of ['12345678','01234567']){const s=setup();s.elements.authOtp.value=token;await s.controller.verify();assert.equal(s.calls.length,1);assert.equal(s.calls[0][1].token,token);assert.equal(s.calls[0][1].type,'email');}
 });

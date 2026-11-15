@@ -2,7 +2,7 @@
 
 15 November 2026.
 
-`index.html` and `action-plan.html` now use `email-code-auth.js` for request/verify. Six numeric characters are validated as text so leading zeros survive. Requests retain first-time signup for pending authorised users; this does not grant participant access. Existing Supabase participant policies remain the authority. No permanent/shared PIN was introduced.
+`index.html` and `action-plan.html` now use `email-code-auth.js` for request/verify. Six or eight numeric characters are validated as text so leading zeros survive. Requests retain first-time signup for pending authorised users; this does not grant participant access. Existing Supabase participant policies remain the authority. No permanent/shared PIN was introduced.
 
 The previous Action Plan regex matched a literal backslash followed by d characters, rejecting numeric OTPs. Both pages now use the tested shared validator. Request failures restore controls; repeated clicks are blocked while a request runs; successful sends impose a local 60-second resend cooldown. Server rate limits still apply. Status is announced to assistive technology. Auth callbacks defer participant queries until the callback returns to avoid the documented Supabase callback deadlock.
 
@@ -10,7 +10,7 @@ The previous Action Plan regex matched a literal backslash followed by d charact
 
 The available Supabase connector does not expose Auth email-template configuration. Its live configuration was not verified or changed here. The Action Plan's prior code UI alone is not proof that emails contain codes.
 
-In the existing tracker project, verify that the Magic Link email template includes `{{ .Token }}` and email OTP length is six. Check the first-time confirmation/signup template as well if enabled. Keep a compatible `{{ .ConfirmationURL }}` link if other pages in this project still rely on email links (`portable-access.html` does). Do not replace the global template with a code-only message until all affected clients have code entry. My Base/PAT has a separate project and is outside this change.
+In the existing tracker project, verify that the Magic Link email template includes `{{ .Token }}` and email OTP length matches the emails being sent (six or eight). Check the first-time confirmation/signup template as well if enabled. Keep a compatible `{{ .ConfirmationURL }}` link if other pages in this project still rely on email links (`portable-access.html` does). Do not replace the global template with a code-only message until all affected clients have code entry. My Base/PAT has a separate project and is outside this change.
 
 Example email content to adapt in the dashboard:
 

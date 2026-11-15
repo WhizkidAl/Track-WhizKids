@@ -66,7 +66,7 @@ Show counts alongside percentages; preserve the existing warning that associatio
 
 ## Suggested implementation order and acceptance checks
 
-1. **Sign-in:** shared six-digit email-code flow and recovery instructions. Check actual email templates, first-time authorised access and school devices before distributing instructions.
+1. **Sign-in:** shared six- or eight-digit email-code flow and recovery instructions. Check actual email templates, first-time authorised access and school devices before distributing instructions.
 2. **Integrity and permissions:** inventory existing schema, grant separate roles/scopes, add atomic submit/correct operations and append-only audit. Verify contributors cannot alter submitted rows or templates by direct API calls, viewers cannot write, and unassigned users cannot read records. Preserve existing records as legacy saves rather than pretending they were locked submissions.
 3. **Periods and results:** add schedule/version model and filters. Test holidays, pauses, time boundaries, 1/2/3 checkpoints, missing data and term comparisons.
 4. **Modular plan:** template versions → plan instances → module instances → actions → approved revisions. Migrate existing JSON keys without rewriting old answers or assigning them invented meaning. Preserve the current afternoon plan as a legacy preset/version. Test simultaneous edits and atomic history.
