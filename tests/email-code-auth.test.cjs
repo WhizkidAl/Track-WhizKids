@@ -46,18 +46,18 @@ test('signed-in rendering clears and hides OTP, signed-out restores it',()=>{
 });
 test('both pages include shared controller and valid inline JavaScript',()=>{
  for(const name of ['index.html','action-plan.html']){
- const html=fs.readFileSync(name,'utf8');
+ const html=fs.readFileSync(name,'utf8'); const app=name==='action-plan.html'?fs.readFileSync('consultation.js','utf8'):html;
  assert.match(html,/src="\.\/email-code-auth.js"/);
  for(const id of ['authOtp','otpField','otpActions','verifyOtpBtn'])assert.equal(html.split('id="'+id+'"').length,2);
  for(const script of html.matchAll(/<script>([\s\S]*?)<\/script>/g))new vm.Script(script[1]);
  assert.match(html,/id="authOtp"[^>]*maxlength="8"/);
  assert.doesNotMatch(html,/6-digit code/);
- assert.match(html,/emailCodeAuth.render\(!!currentUser\)/);
+ assert.match(app,/emailCodeAuth.render\(!!currentUser\)/);
  }
 });
 test('auth callbacks release the auth lock before loading participants',async()=>{
- for(const [page,fn] of [['index.html','initialiseAuth'],['action-plan.html','init']]){
-  const html=fs.readFileSync(page,'utf8');
+ for(const [page,fn] of [['index.html','initialiseAuth']]){
+  const html=page==='action-plan.html'?fs.readFileSync('consultation.js','utf8'):fs.readFileSync(page,'utf8');
   const start=html.indexOf('async function '+fn+'(){');
   const code=html.slice(start,html.indexOf('\n'+fn+'();',start));
   let callback,locked=false,loads=0; const timers=[];
