@@ -11,6 +11,12 @@ Shared browser-based tracking tools for Whiz Kids Therapy.
 ## First module
 Whole-Day Participation & Regulation Tracker.
 
+## Email-code access and planning review
+- [Email-code setup and release checks](docs/email-code-rollout.md)
+- [Modular Action Plan proposal and architecture review](docs/modular-action-plan-review.md)
+- [Participant email and device instructions](docs/participant-instructions.md)
+- Auth regression checks: `node --test tests/email-code-auth.test.cjs`.
+
 ## Planned public address
 `track.whizkidstherapy.com`
 
