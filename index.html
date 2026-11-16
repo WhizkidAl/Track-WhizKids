@@ -128,6 +128,13 @@ let records=[];
 let reflections=[];
 let currentUser=null;
 let participantMap=new Map();
+let trackerCanWrite=false;
+function renderTrackerAccess(){
+ document.querySelectorAll('button[onclick^="save"]').forEach(b=>{b.disabled=!trackerCanWrite;b.closest("section")?.querySelectorAll("input,select,textarea").forEach(f=>{if(!["participant","date","authEmail","authOtp"].includes(f.id))f.disabled=!trackerCanWrite;});});
+ let note=document.getElementById("trackerAccessNote");if(!note){note=document.createElement("p");note.id="trackerAccessNote";note.setAttribute("role","status");document.getElementById("participant").closest("section").append(note);}
+ note.textContent=currentUser?(trackerCanWrite?"You can contribute to this tracker.":"Read-only tracker access. You can view recorded days and patterns; Action Plan permissions are separate."):"Sign in to view your authorised tracker.";
+}
+
 
 function buildCheckpoints(){
  const container=document.getElementById("checkpoints");
@@ -207,6 +214,7 @@ function setRadio(name,value){
  document.querySelectorAll('input[name="'+name+'"]').forEach(el=>{el.checked=el.value===value});
 }
 function requireSession(){
+ if(!trackerCanWrite){alert("This tracker is read-only for your account, or access is still loading.");return false;}
  if(!currentUser){
    alert("Please sign in first.");
    return false;
@@ -237,7 +245,9 @@ function setAuthStatus(message){
 }
 
 function renderAuth(session){
+ trackerCanWrite=false;
  currentUser=session?.user||null;
+ renderTrackerAccess();
  emailCodeAuth.render(!!currentUser);
  document.body.classList.toggle("signed-out",!currentUser);
  const badge=document.getElementById("authBadge");
@@ -280,10 +290,15 @@ async function loadParticipants(){
 }
 
 async function loadRecords(){
+ trackerCanWrite=false;renderTrackerAccess();
  if(!currentUser) return;
  const participantId=document.getElementById("participant").value;
  if(!participantId){records=[];reflections=[];renderAll();return;}
 
+ const accessUser=currentUser.id;
+ const permission=await db.from("participant_access").select("can_write").eq("participant_id",participantId).eq("user_id",accessUser).maybeSingle();
+ if(currentUser?.id!==accessUser||document.getElementById("participant").value!==participantId)return;
+ trackerCanWrite=!permission.error&&permission.data?.can_write===true;renderTrackerAccess();
  const reflectionRes=await db.from("tracker_reflections")
    .select("id,reflection_type,about_date,reflection_text,author_label,created_at")
    .eq("participant_id",participantId)
@@ -715,6 +730,7 @@ function showToast(message){
 
 async function initialiseAuth(){
  buildCheckpoints();
+ renderTrackerAccess();
  document.getElementById("date").valueAsDate=new Date();
  document.getElementById("participant").addEventListener("change",loadRecords);
  toggleIncident();
