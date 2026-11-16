@@ -18,3 +18,5 @@ test('two periods retain different schedules and pause gaps; historic unschedule
 test('CSV protects against spreadsheet formulas and quotes names safely',()=>{
  const r=A.analyse({periods:[],days:[day('2026-11-02',{sleep:'fine',morning_completed_by:'=HYPERLINK("bad")'})]},'2026-11-02','2026-11-02','2026-11-03');assert.match(A.csv(r),/'=HYPERLINK\(""bad""\)/);
 });
+
+test('optional medication is not counted as a missing home answer',()=>{const r=A.analyse({periods:[{...period,home_fields:['sleep','breakfast']}],days:[day('2026-11-02',{sleep:'Slept through',breakfast:'Ate well'})]},'2026-11-02','2026-11-02','2026-11-03');assert.equal(r.rows[0].cells[0].state,'complete');});
