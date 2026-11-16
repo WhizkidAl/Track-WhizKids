@@ -59,7 +59,7 @@ test('auth callbacks release the auth lock before loading participants',async()=
  for(const [page,fn] of [['index.html','initialiseAuth']]){
   const html=page==='action-plan.html'?fs.readFileSync('consultation.js','utf8'):fs.readFileSync(page,'utf8');
   const start=html.indexOf('async function '+fn+'(){');
-  const code=html.slice(start,html.indexOf('\n'+fn+'();',start));
+  const code=html.slice(start,html.indexOf('\n// Initialised by tracker-schedule.js.',start));
   let callback,locked=false,loads=0; const timers=[];
   const ctx={db:{auth:{getSession:async()=>({data:{session:null}}),onAuthStateChange:cb=>callback=cb}},
    document:{getElementById:()=>({addEventListener(){}})},currentUser:null,
