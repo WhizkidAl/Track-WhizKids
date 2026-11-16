@@ -1,3 +1,57 @@
 :root{--blue:#006e79;--line:#dbe6e4;color:#253d42;background:#f5f6f2;font-family:Calibri,"Segoe UI",sans-serif}header{background:#164e57;padding:16px 0 22px;border-bottom:5px solid #e6b65d}header h1{font-size:29px;margin:6px 0}header p{margin:4px 0}header nav{margin-top:12px;font-size:14px}header .eyebrow{color:#b9e2dc}.shell{max-width:1240px}.card{border-radius:10px;padding:20px;box-shadow:none;margin-bottom:16px}h2{font-size:21px;margin-bottom:12px}h3{font-size:17px}.client-bar{display:flex;align-items:center;gap:18px;margin-bottom:14px}.client-bar label{min-width:240px;margin:0}.client-bar button{align-self:end}.workspace-caption{font-size:14px;color:#607879;margin-left:auto}.workspace-tabs{position:sticky;top:0;z-index:5;background:#f5f6f2;gap:4px;border-bottom:1px solid #cadbd6;margin:0 0 20px;padding:8px 0}.workspace-tabs button{background:transparent;color:#466165;border-radius:7px;margin:0;font-size:15px;padding:10px 16px}.workspace-tabs button[aria-current=page]{background:#164e57;color:#fff}.workspace-welcome{padding:14px 0 25px}.workspace-welcome h2{font-size:32px}.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.overview-grid>.card:first-child{border-top:4px solid #53a99b}.overview-grid>.card:nth-child(2){border-top:4px solid #e2b45f}.workspace-panel{min-width:0}.workspace-panel p{font-size:15px}.workspace-panel .grid{gap:10px 18px}button{padding:9px 14px}input:not([type=checkbox]),select,textarea{padding:8px 10px;border-radius:6px}dialog{border:0;border-radius:14px;width:min(590px,94vw);max-height:90vh;padding:0;box-shadow:0 20px 90px #1235}dialog::backdrop{background:#173c4780}dialog .card{margin:0;border:0;padding:26px}#authCard{padding:14px 20px}#authCard .grid{grid-template-columns:2fr 1fr 1fr 1fr;align-items:end}#authCard h2{font-size:18px}#authCard p{font-size:14px}#mailBody{max-height:none;min-height:420px;field-sizing:fixed}#bulkTeamRows input{min-width:160px}#bulkTeamRows select{min-width:125px}#status{position:relative}#status:not(:empty){border-color:#00877f;background:#e7f3ee}table th{background:#eef3ef}.team-person{background:#edf4ef}#panel-results .team-list{display:grid;grid-template-columns:repeat(3,1fr)}#panel-results .team-person strong{font-size:24px;display:block}.notice{background:#fff5df;border-color:#be9038}a{color:#006975}.secondary{background:#e6eeeb!important;color:#284f51!important}@media(max-width:760px){.overview-grid{grid-template-columns:1fr}.workspace-caption{display:none}.client-bar{gap:10px}.client-bar label{min-width:0;flex:1}.workspace-tabs{overflow-x:auto;flex-wrap:nowrap}.workspace-tabs button{white-space:nowrap;padding:10px 12px;font-size:14px}#authCard .grid{grid-template-columns:1fr 1fr}#panel-results .team-list{grid-template-columns:1fr 1fr}.workspace-welcome h2{font-size:27px}.card{padding:16px}.shell{padding-left:14px;padding-right:14px}}
 
 .signed-in #authCard{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:8px 14px;background:transparent;border:0;margin:0 0 8px}.signed-in #authCard h2,.signed-in #authCard>p,.signed-in #authCard label{display:none}.signed-in #authCard .grid{display:block}.signed-in #authCard button{font-size:12px;padding:6px 10px;margin:0}.signed-in #authCard .badge{padding:4px 8px}.signed-in main{padding-top:10px!important}
+
+/* Whiz Kids identity: a clear working surface, compact navigation and room for the content. */
+.workspace-ui{--blue:#1469ae;--line:#dce5ed;background:#f4f7fb;color:#20354b;font-family:"Segoe UI",Aptos,system-ui,sans-serif;line-height:1.5}
+.workspace-ui header{background:#fff;color:#233b50;padding:16px 0;border-bottom:1px solid #dce5ed}
+.workspace-ui header .shell{display:grid;grid-template-columns:182px 1fr auto;gap:32px;align-items:center}
+.brand-logo{display:block;width:182px;height:94px;object-fit:contain}
+.brand-heading{border-left:1px solid #dce5ed;padding-left:30px}
+.workspace-ui header .eyebrow{color:#496a86;font-size:10px;letter-spacing:.15em;margin:0 0 5px}
+.workspace-ui header h1{font-size:27px;font-weight:650;letter-spacing:-.7px;margin:0 0 4px}
+.workspace-ui header p{font-size:13px;color:#65778a}
+.workspace-ui header nav{margin:0;gap:8px;display:flex;flex-direction:column;align-items:flex-start}
+.workspace-ui header nav a{color:#135e99;font-size:13px;text-decoration:none;font-weight:600;padding:5px 0}
+.workspace-ui header nav a:hover{text-decoration:underline}
+.workspace-ui .shell{max-width:1280px;padding-left:28px;padding-right:28px}
+.workspace-ui #authCard{margin-bottom:4px;padding-left:0;padding-right:0}
+.workspace-ui .badge{background:#e5f1ec;color:#285d49}
+.workspace-ui .client-bar{padding:14px 0 22px;margin-bottom:0;border-bottom:1px solid var(--line);gap:12px}
+.workspace-ui .client-bar label{font-size:12px;color:#5c7186;min-width:270px}
+.workspace-ui .client-bar select{font-size:16px;font-weight:650;color:#20354b;border-color:#c5d4e2;margin-top:4px;min-height:42px}
+.workspace-ui .client-bar button{min-height:42px;margin:0;border-radius:8px;box-shadow:0 3px 7px #1269ab15}
+.workspace-ui .workspace-caption{font-size:12px;color:#657a8e}
+.workspace-ui #workspace{display:grid;grid-template-columns:182px minmax(0,1fr);gap:28px;padding-top:24px}
+.workspace-ui .workspace-tabs{grid-column:1;grid-row:1;position:sticky;top:20px;align-self:start;display:flex;flex-direction:column;align-items:stretch;background:transparent;border:0;margin:0;padding:0;gap:5px;overflow:visible}
+.workspace-ui .workspace-tabs::before{content:'MANAGE CLIENT';font-size:10px;letter-spacing:.14em;font-weight:700;color:#6c8195;padding:7px 13px 11px}
+.workspace-ui .workspace-tabs button{text-align:left;border-radius:7px;font-size:14px;font-weight:550;color:#51667c;padding:12px 14px;background:transparent;white-space:normal;position:relative}
+.workspace-ui .workspace-tabs button:hover{background:#eaf0f7;color:#135e99}
+.workspace-ui .workspace-tabs button[aria-current=page]{background:#e1edf9;color:#105e9d;font-weight:700;box-shadow:inset 3px 0 #1672b9}
+.workspace-ui .workspace-panel{grid-column:2;grid-row:1}
+.workspace-ui .workspace-welcome{padding:22px 25px 24px;margin:0 0 22px;border:1px solid #d6e5f3;border-radius:14px;background:linear-gradient(110deg,#edf5ff 0%,#fafdff 80%);position:relative;overflow:hidden}
+.workspace-ui .workspace-welcome::after{content:'';position:absolute;width:120px;height:120px;border:20px solid #1469ae06;border-radius:50%;right:-35px;top:-35px;pointer-events:none}
+.workspace-ui .workspace-welcome .eyebrow{font-size:10px;color:#49749a;letter-spacing:.14em;margin:0 0 6px}
+.workspace-ui .workspace-welcome h2{font-size:31px;letter-spacing:-.6px;margin:0 0 7px;font-weight:650}
+.workspace-ui .workspace-welcome>p:not(.eyebrow){font-size:14px;color:#61768b;margin:0 0 17px}
+.workspace-ui .actions{gap:8px}
+.workspace-ui button{border-radius:7px;font-weight:600;font-size:14px;padding:10px 14px}
+.workspace-ui .workspace-welcome button{margin:0;font-size:12px;padding:9px 12px}
+.workspace-ui .secondary{background:#edf2f8!important;color:#285b86!important}
+.workspace-ui .workspace-welcome .secondary{background:#fff!important;border:1px solid #ccdeee}
+.workspace-ui .card{border-radius:12px;border-color:#dce5ed;padding:22px;margin-bottom:20px;background:#fff;box-shadow:0 3px 12px #20354b03}
+.workspace-ui .overview-grid{gap:18px;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr)}
+.workspace-ui .overview-grid>.card{border-top:1px solid var(--line);position:relative;padding-top:25px}
+.workspace-ui .overview-grid>.card::before{content:'';position:absolute;top:0;left:22px;width:42px;height:4px;border-radius:0 0 4px 4px;background:#1b77bb}
+.workspace-ui .overview-grid>.card:nth-child(2)::before{background:#8b9dad}
+.workspace-ui h2{font-size:19px;letter-spacing:-.25px;font-weight:650}
+.workspace-ui .workspace-panel p{font-size:14px;color:#52697f}
+.workspace-ui .workspace-panel th{background:#f1f5f9;color:#49627a;font-size:12px}
+.workspace-ui .workspace-panel td{font-size:13px;padding-top:12px;padding-bottom:12px}
+.workspace-ui .workspace-panel details{border-top:1px solid #e3eaf1;padding-top:13px}
+.workspace-ui input:not([type=checkbox]),.workspace-ui select,.workspace-ui textarea{border-color:#cbd8e5;color:#273e55}
+.workspace-ui a{color:#1267aa}
+.workspace-ui #status:not(:empty){border-left-color:#1672b9;background:#e9f3fd;border-radius:6px;font-size:14px}
+.workspace-ui .team-person{background:#f0f5fa}
+@media(max-width:850px){.workspace-ui header .shell{grid-template-columns:150px 1fr;gap:20px}.brand-logo{width:150px;height:78px}.brand-heading{padding-left:20px}.workspace-ui header nav{grid-column:1/-1;flex-direction:row;gap:22px;padding-top:4px}.workspace-ui #workspace{grid-template-columns:150px minmax(0,1fr);gap:18px}.workspace-ui .overview-grid{grid-template-columns:1fr}.workspace-ui .workspace-caption{display:none}}
+@media(max-width:600px){.workspace-ui .shell{padding-left:16px;padding-right:16px}.workspace-ui header{padding:12px 0}.workspace-ui header .shell{grid-template-columns:120px minmax(0,1fr);gap:12px}.brand-logo{width:120px;height:65px}.brand-heading{padding-left:14px}.workspace-ui header h1{font-size:20px;letter-spacing:-.4px}.workspace-ui header .eyebrow{font-size:8px;letter-spacing:.09em}.workspace-ui header p{font-size:11px}.workspace-ui header nav{gap:20px;padding:0}.workspace-ui header nav a{font-size:12px}.workspace-ui .client-bar{padding:10px 0 17px;gap:10px}.workspace-ui .client-bar label{min-width:0;flex:1}.workspace-ui .client-bar button{font-size:12px;flex:none;padding:9px 12px}.workspace-ui #workspace{display:block;padding-top:16px}.workspace-ui .workspace-tabs{display:flex;flex-direction:row;flex-wrap:wrap;position:static;gap:5px;margin:0 0 18px}.workspace-ui .workspace-tabs::before{display:none}.workspace-ui .workspace-tabs button{flex:1 1 27%;text-align:center;font-size:12px;padding:10px 6px;background:#eaf0f6;white-space:nowrap}.workspace-ui .workspace-tabs button[aria-current=page]{background:#1469ae;color:#fff;box-shadow:none}.workspace-ui .workspace-welcome{padding:19px 18px;margin-bottom:16px}.workspace-ui .workspace-welcome h2{font-size:27px}.workspace-ui .workspace-welcome .actions{gap:7px}.workspace-ui .workspace-welcome button{font-size:11px;padding:8px 9px}.workspace-ui .card{padding:19px;margin-bottom:16px}.workspace-ui .overview-grid{gap:0}.workspace-ui .workspace-panel{min-width:0}}
