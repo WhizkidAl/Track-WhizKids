@@ -13,9 +13,11 @@
 
 The composer adapts the approved short template to the client, enabled tools, selected recipients and review links. It includes the verified text signature; inline signature graphics are not reproduced. It does not claim an initial contribution exists for a new client.
 
-**Send and schedule controls are deliberately disabled.** The datetime control is only a proposed send time; it is not an outbox or a scheduled job. No Microsoft application registration, mailbox grant, token storage, scheduler, or delivery worker has been installed by this change. Connected assistant Outlook tools are not credentials that the public website can reuse.
+The Microsoft outbox is now implemented in workspace-mail.js, the workspace-mail Edge Function and private mail tables. Sending remains disabled until the coordinator connects their mailbox. App registration is complete; the tenant blocks client secrets, so certificate registration and delegated mailbox consent are the remaining setup steps. No mailbox consent or live send is implied by registering the app.
 
-Before enabling those controls, provision an application with delegated Mail.Send access to the coordinator mailbox, a server-side OAuth callback with durable encrypted refresh-token storage, and an authenticated outbox worker. Validate recipients against the selected client's authorised team at queue and send time. Record Microsoft acceptance separately from delivery, avoid automatic retries after an ambiguous send result, provide cancellation before dispatch, and verify scheduling with the browser closed. Obtain the mailbox owner's consent before granting access. Do not send a test to a real team without explicit approval.
+Scheduled jobs run server-side every minute using pg_cron and pg_net. Private keys and refresh tokens are encrypted in Supabase Vault, accessible only through service-role-only functions. The Edge Function validates the Supabase user before coordinator operations; the worker has a separate random credential; OAuth uses one-use state, PKCE and short-lived PS256 certificate assertions. Recipients are checked against the client's authorised team when queued and again before sending. Repeated queue requests with the same identifier are idempotent. A timeout after dispatch becomes uncertain and is not automatically retried. Microsoft acceptance is shown separately from delivery. A scheduled job can be cancelled before the worker claims it.
+
+No real invitation was sent during implementation. Unit tests simulate Microsoft responses; rollback-only SQL checks exercise recipient restrictions, idempotency and cancellation. A real connected-mailbox send/schedule smoke test remains pending explicit user approval. The private certificate key is never in the public repository. Rotate its certificate before expiry; the server disables the connection configuration after expiry.
 
 ## Verification
 
@@ -23,3 +25,5 @@ Before enabling those controls, provision an application with delegated Mail.Sen
 - `tests/workspace-rollback.sql`: creation, independent tool access, preparation gate, immutable responses, version replacement, owner-only changes, explicit activation; entire test rolls back.
 - Existing tracker reader/writer, consultation form/history, and email-code tests remain applicable.
 - `supabase/workspace.sql`, then `supabase/workspace_followup.sql` are the migration order. Private tables intentionally have RLS with no direct client policies; gated functions provide access.
+
+Mail migration order: workspace_mail.sql, then workspace_mail_certificate.sql. Deploy supabase/functions/workspace-mail/index.ts with its handler.mjs; JWT gateway verification is disabled because OAuth callbacks are unauthenticated, but all coordinator and worker routes enforce their own authentication.

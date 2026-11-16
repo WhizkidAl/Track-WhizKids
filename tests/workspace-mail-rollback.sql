@@ -1,0 +1,24 @@
+begin;
+create temporary table mail_test as select o.user_id owner,o.participant_id pid,u.email,(select lower(u2.email) from public.participant_access a join auth.users u2 on u2.id=a.user_id where a.participant_id=o.participant_id and a.user_id<>o.user_id and a.can_view limit 1) recipient,gen_random_uuid() jid from private.tracker_owners o join auth.users u on u.id=o.user_id where exists(select 1 from public.participant_access a where a.participant_id=o.participant_id and a.user_id<>o.user_id) limit 1;
+grant select on mail_test to authenticated,service_role;
+set local role authenticated;
+do $$begin begin perform public.workspace_mail_service('worker_secret',null,'{}');raise exception 'Authenticated user obtained service access';exception when insufficient_privilege then null;end;end$$;
+reset role;
+select set_config('request.jwt.claims','{"role":"service_role"}',true);
+set local role service_role;
+do $$declare s record;p jsonb;r jsonb;begin
+ select * into s from mail_test;
+ perform public.workspace_mail_service('connect',s.owner,jsonb_build_object('email',s.email,'refresh_token','unit-test-refresh-token-never-valid'));
+ p:=jsonb_build_object('id',s.jid,'participant_id',s.pid,'recipients',jsonb_build_array(s.recipient),'subject','Rollback-only test','body','No real email will be sent.','send_at',now()+interval '1 hour');
+ r:=public.workspace_mail_service('queue',s.owner,p);
+ perform public.workspace_mail_service('queue',s.owner,p);
+ if r->>'status'<>'scheduled' then raise exception 'Not queued';end if;
+ r:=public.workspace_mail_service('list',s.owner,jsonb_build_object('participant_id',s.pid));
+ if (select count(*) from jsonb_array_elements(r) x where x->>'id'=s.jid::text)<>1 then raise exception 'Idempotency failed';end if;
+ begin perform public.workspace_mail_service('queue',s.owner,p||jsonb_build_object('id',gen_random_uuid(),'recipients',jsonb_build_array('unassigned@example.test')));raise exception 'Unassigned recipient allowed' using errcode='ZX001';exception when sqlstate 'P0001' then null;end;
+ perform public.workspace_mail_service('cancel',s.owner,jsonb_build_object('participant_id',s.pid,'id',s.jid));
+ r:=public.workspace_mail_service('list',s.owner,jsonb_build_object('participant_id',s.pid));
+ if not exists(select 1 from jsonb_array_elements(r) x where x->>'id'=s.jid::text and x->>'status'='cancelled') then raise exception 'Cancellation failed';end if;
+end$$;
+reset role;
+rollback;
