@@ -7,16 +7,16 @@
  const nonempty=v=>typeof v==='string'?!!v.trim():v!==null&&v!==undefined;
  function periodOn(periods,date){return periods.find(p=>date>=p.start_date&&date<=p.end_date);}
  function scheduled(p,date){return !!p&&p.weekdays.includes(new Date(date+'T12:00:00Z').getUTCDay()||7)&&!p.excluded_dates.includes(date);}
- function sectionState(section,row){
+ function sectionState(section,row,fields=homeFields){
   if(!row)return 'empty';
-  if(section==='home'){const n=homeFields.filter(k=>nonempty(row[k])).length;return n===4?'complete':n||nonempty(row.parent_comment)||nonempty(row.morning_completed_by)?'partial':'empty';}
+  if(section==='home'){const n=fields.filter(k=>nonempty(row[k])).length;return n===fields.length?'complete':n||nonempty(row.parent_comment)||nonempty(row.morning_completed_by)?'partial':'empty';}
   return participation[row.participation]&&regulation[row.regulation]?'complete':participation[row.participation]||regulation[row.regulation]||nonempty(row.comment)||nonempty(row.support_note)||row.context_factors?.length||row.support_strategies?.length?'partial':'empty';
  }
  function analyse(data,from,to,today){
   const days=data.days.filter(d=>d.tracking_date>=from&&d.tracking_date<=to), periods=data.periods||[],map=new Map(days.map(d=>[d.tracking_date,d]));
   const dates=new Set(map.keys());for(let d=new Date(from+'T12:00:00Z');d.toISOString().slice(0,10)<=to;d.setUTCDate(d.getUTCDate()+1)){const date=d.toISOString().slice(0,10);if(scheduled(periodOn(periods,date),date))dates.add(date);}
   let expected=0,complete=0,partial=0,missing=0;
-  const rows=[...dates].sort().map(date=>{const d=map.get(date),p=periodOn(periods,date),on=scheduled(p,date);const cells=['home',...Object.keys(checkpoints)].map(section=>{const value=section==='home'?d:d?.checkpoints.find(c=>c.checkpoint===section);const state=sectionState(section,value);const required=on&&(section==='home'?p.home_expected:p.checkpoints.includes(section));if(required&&date<today){expected++;if(state==='complete')complete++;else if(state==='partial')partial++;else missing++;}const status=state==='complete'?'Complete':state==='partial'?'Partial':required?(date>today?'Not yet due':date===today?'Not yet recorded today':'Missing'):p?'Not scheduled':'Not recorded — schedule unset';return {section,value,state,required,status};});return {date,period:p,scheduled:on,cells,day:d};});
+  const rows=[...dates].sort().map(date=>{const d=map.get(date),p=periodOn(periods,date),on=scheduled(p,date);const cells=['home',...Object.keys(checkpoints)].map(section=>{const value=section==='home'?d:d?.checkpoints.find(c=>c.checkpoint===section);const state=sectionState(section,value,p?.home_fields||homeFields);const required=on&&(section==='home'?p.home_expected:p.checkpoints.includes(section));if(required&&date<today){expected++;if(state==='complete')complete++;else if(state==='partial')partial++;else missing++;}const status=state==='complete'?'Complete':state==='partial'?'Partial':required?(date>today?'Not yet due':date===today?'Not yet recorded today':'Missing'):p?'Not scheduled':'Not recorded — schedule unset';return {section,value,state,required,status};});return {date,period:p,scheduled:on,cells,day:d};});
   const cpStats=Object.keys(checkpoints).map(key=>{const samples=days.flatMap(d=>d.checkpoints.filter(c=>c.checkpoint===key));const p=Object.fromEntries(Object.keys(participation).map(k=>[k,samples.filter(c=>c.participation===k).length]));const r=Object.fromEntries(Object.keys(regulation).map(k=>[k,samples.filter(c=>c.regulation===k).length]));return {key,p,r,participationN:Object.values(p).reduce((a,b)=>a+b,0),regulationN:Object.values(r).reduce((a,b)=>a+b,0)};});
   const rated=days.filter(d=>d.checkpoints.some(c=>participation[c.participation]||regulation[c.regulation]));
   const difficulty=d=>d.checkpoints.some(c=>c.participation==='not_meaningfully_participating'||['some_difficulty','significant_difficulty'].includes(c.regulation));
