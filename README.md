@@ -11,6 +11,10 @@ Shared browser-based tracking tools for Whiz Kids Therapy.
 ## First module
 Whole-Day Participation & Regulation Tracker.
 
+## Tracker administration
+- [Completion, analysis and reusable client setup](docs/tracker-admin.md)
+- Open `tracker-admin.html` for per-client completion, outcomes, monitoring periods and tracker team access.
+
 ## Email-code access and planning review
 - [Live team consultation and private mock-run guide](docs/team-consultation-release.md)
 - [Email-code setup and release checks](docs/email-code-rollout.md)
