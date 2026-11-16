@@ -63,7 +63,7 @@ test('auth callbacks release the auth lock before loading participants',async()=
   let callback,locked=false,loads=0; const timers=[];
   const ctx={db:{auth:{getSession:async()=>({data:{session:null}}),onAuthStateChange:cb=>callback=cb}},
    document:{getElementById:()=>({addEventListener(){}})},currentUser:null,
-   buildCheckpoints(){},toggleIncident(){},renderAll(){},clearForm(){},loadRecords(){},loadPlan(){},
+   buildCheckpoints(){},renderTrackerAccess(){},toggleIncident(){},renderAll(){},clearForm(){},loadRecords(){},loadPlan(){},
    renderAuth(session){ctx.currentUser=session?.user||null},
    async loadParticipants(){assert.equal(locked,false);loads++},setAuthStatus(){},setTimeout:f=>timers.push(f)};
   vm.createContext(ctx);vm.runInContext(code,ctx);await vm.runInContext(fn+'()',ctx);
